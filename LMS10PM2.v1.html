@@ -1,0 +1,3019 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>LMS SMK FAJAR - Kelas 10 PM 2</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/chart.js@3.7.1/dist/chart.min.css">
+    <style>
+        :root {
+            --primary-color: #3498db;
+            --secondary-color: #2980b9;
+            --accent-color: #e74c3c;
+            --light-color: #ecf0f1;
+            --dark-color: #2c3e50;
+            --success-color: #2ecc71;
+            --warning-color: #f39c12;
+            --danger-color: #e74c3c;
+            --text-color: #333;
+            --text-light: #7f8c8d;
+            --border-radius: 12px;
+            --box-shadow: 0 6px 12px rgba(0, 0, 0, 0.1);
+            --transition: all 0.3s ease;
+            --gradient-primary: linear-gradient(135deg, #3498db, #2c3e50);
+            --gradient-success: linear-gradient(135deg, #2ecc71, #27ae60);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Poppins', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background-color: #f8f9fa;
+            color: var(--text-color);
+            line-height: 1.6;
+        }
+
+        body.dark-mode {
+            background-color: #121212;
+            color: #f5f5f5;
+            --light-color: #1e1e1e;
+            --text-color: #f5f5f5;
+            --text-light: #b0b0b0;
+        }
+
+        /* Header Styles */
+        header {
+            background: var(--gradient-primary);
+            box-shadow: var(--box-shadow);
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+            color: white;
+        }
+
+        body.dark-mode header {
+            background: linear-gradient(135deg, #2c3e50, #1a252f);
+        }
+
+        .header-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 1rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .logo i {
+            font-size: 2.5rem;
+            color: white;
+        }
+
+        .logo-text h1 {
+            font-size: 1.5rem;
+            margin-bottom: 0.2rem;
+            color: white;
+            font-weight: 600;
+        }
+
+        .logo-text p {
+            font-size: 0.9rem;
+            color: rgba(255, 255, 255, 0.8);
+        }
+
+        .menu-toggle {
+            background: none;
+            border: none;
+            font-size: 1.5rem;
+            color: white;
+            cursor: pointer;
+            display: none;
+        }
+
+        .main-menu {
+            display: flex;
+            gap: 1.5rem;
+        }
+
+        .menu-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            cursor: pointer;
+            position: relative;
+            padding: 0.5rem;
+            color: rgba(255, 255, 255, 0.8);
+            transition: var(--transition);
+        }
+
+        .menu-item.active {
+            color: white;
+            transform: translateY(-3px);
+        }
+
+        .menu-item i {
+            font-size: 1.2rem;
+            margin-bottom: 0.3rem;
+        }
+
+        .menu-item span {
+            font-size: 0.9rem;
+            font-weight: 500;
+        }
+
+        .menu-item:hover {
+            color: white;
+            transform: translateY(-3px);
+        }
+
+        .tooltip {
+            position: absolute;
+            top: 100%;
+            left: 50%;
+            transform: translateX(-50%);
+            background-color: var(--dark-color);
+            color: white;
+            padding: 0.5rem 1rem;
+            border-radius: var(--border-radius);
+            font-size: 0.8rem;
+            white-space: nowrap;
+            opacity: 0;
+            visibility: hidden;
+            transition: var(--transition);
+            z-index: 100;
+            box-shadow: var(--box-shadow);
+        }
+
+        .menu-item:hover .tooltip {
+            opacity: 1;
+            visibility: visible;
+            transform: translateX(-50%) translateY(5px);
+        }
+
+        /* Main Content Styles */
+        .container {
+            max-width: 1200px;
+            margin: 2rem auto;
+            padding: 0 1rem;
+        }
+
+        .section {
+            background-color: white;
+            border-radius: var(--border-radius);
+            box-shadow: var(--box-shadow);
+            padding: 2rem;
+            margin-bottom: 2rem;
+            border: 1px solid rgba(0, 0, 0, 0.05);
+        }
+
+        body.dark-mode .section {
+            background-color: var(--dark-color);
+            border-color: #333;
+        }
+
+        .section-title {
+            font-size: 1.5rem;
+            margin-bottom: 1.5rem;
+            color: var(--primary-color);
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-weight: 600;
+            padding-bottom: 0.5rem;
+            border-bottom: 2px solid var(--primary-color);
+        }
+
+        .section-title i {
+            font-size: 1.2rem;
+        }
+
+        /* Absensi Section */
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: 500;
+            color: var(--text-color);
+        }
+
+        body.dark-mode label {
+            color: #f5f5f5;
+        }
+
+        input, select, textarea {
+            width: 100%;
+            padding: 0.8rem 1rem;
+            border: 1px solid #ddd;
+            border-radius: var(--border-radius);
+            font-size: 1rem;
+            transition: var(--transition);
+            background-color: white;
+        }
+
+        textarea {
+            min-height: 100px;
+            resize: vertical;
+        }
+
+        body.dark-mode input, 
+        body.dark-mode select,
+        body.dark-mode textarea {
+            background-color: #333;
+            color: white;
+            border-color: #555;
+        }
+
+        input:focus, select:focus, textarea:focus {
+            outline: none;
+            border-color: var(--primary-color);
+            box-shadow: 0 0 0 3px rgba(52, 152, 219, 0.2);
+        }
+
+        button {
+            background: var(--gradient-primary);
+            color: white;
+            border: none;
+            padding: 0.8rem 1.5rem;
+            border-radius: var(--border-radius);
+            font-size: 1rem;
+            cursor: pointer;
+            transition: var(--transition);
+            font-weight: 500;
+        }
+
+        button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            opacity: 0.9;
+        }
+
+        .status {
+            padding: 0.8rem 1rem;
+            border-radius: var(--border-radius);
+            margin-top: 1rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-weight: 500;
+        }
+
+        .status.success {
+            background-color: rgba(46, 204, 113, 0.2);
+            color: var(--success-color);
+            border-left: 4px solid var(--success-color);
+        }
+
+        .status.error {
+            background-color: rgba(231, 76, 60, 0.2);
+            color: var(--danger-color);
+            border-left: 4px solid var(--danger-color);
+        }
+
+        /* Materi Section */
+        .materi-content {
+            margin-bottom: 2rem;
+            padding-bottom: 1.5rem;
+            border-bottom: 1px solid #eee;
+            transition: var(--transition);
+        }
+
+        body.dark-mode .materi-content {
+            border-bottom-color: #444;
+        }
+
+        .materi-content:hover {
+            transform: translateY(-3px);
+        }
+
+        .materi-content h2 {
+            font-size: 1.3rem;
+            margin-bottom: 1rem;
+            color: var(--primary-color);
+            font-weight: 600;
+        }
+
+        .materi-content p {
+            margin-bottom: 1rem;
+            line-height: 1.7;
+        }
+
+        .materi-meta {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-top: 1rem;
+            font-size: 0.9rem;
+            color: var(--text-light);
+        }
+
+        .action-buttons {
+            display: flex;
+            gap: 0.8rem;
+        }
+
+        .btn {
+            padding: 0.6rem 1.2rem;
+            border-radius: var(--border-radius);
+            font-size: 0.9rem;
+            cursor: pointer;
+            transition: var(--transition);
+            font-weight: 500;
+        }
+
+        .btn-primary {
+            background: var(--gradient-primary);
+            color: white;
+        }
+
+        .btn-secondary {
+            background: var(--gradient-success);
+            color: white;
+        }
+
+        .btn-outline {
+            background-color: transparent;
+            border: 1px solid var(--primary-color);
+            color: var(--primary-color);
+        }
+
+        body.dark-mode .btn-outline {
+            border-color: var(--primary-color);
+            color: var(--primary-color);
+        }
+
+        .btn-outline:hover {
+            background-color: var(--primary-color);
+            color: white;
+        }
+
+        .checkbox-container {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            margin-top: 1rem;
+            padding: 0.5rem 0;
+        }
+
+        .checkbox-container input {
+            width: auto;
+            transform: scale(1.2);
+        }
+        
+        .poin-info {
+            margin-top: 0.5rem;
+            font-size: 0.9rem;
+            color: var(--text-light);
+            font-style: italic;
+        }
+
+        /* Modal Styles */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.7);
+            z-index: 1000;
+            overflow-y: auto;
+        }
+
+        .modal-content {
+            background-color: white;
+            margin: 2rem auto;
+            padding: 2.5rem;
+            border-radius: var(--border-radius);
+            max-width: 800px;
+            position: relative;
+            box-shadow: var(--box-shadow);
+            animation: modalFadeIn 0.3s ease;
+        }
+
+        @keyframes modalFadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(-20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        body.dark-mode .modal-content {
+            background-color: #1e1e1e;
+        }
+
+        .close-modal {
+            position: absolute;
+            top: 1rem;
+            right: 1rem;
+            font-size: 1.8rem;
+            cursor: pointer;
+            color: var(--text-light);
+            transition: var(--transition);
+        }
+
+        .close-modal:hover {
+            color: var(--danger-color);
+            transform: rotate(90deg);
+        }
+
+        .modal-title {
+            font-size: 1.8rem;
+            margin-bottom: 1.5rem;
+            color: var(--primary-color);
+            font-weight: 600;
+            padding-bottom: 0.5rem;
+            border-bottom: 2px solid var(--primary-color);
+        }
+
+        .modal-body {
+            line-height: 1.8;
+        }
+
+        .modal-body h3 {
+            margin: 1.5rem 0 0.8rem;
+            color: var(--primary-color);
+            font-size: 1.3rem;
+        }
+
+        .modal-body h4 {
+            margin: 1.2rem 0 0.6rem;
+            font-size: 1.1rem;
+            color: var(--secondary-color);
+        }
+
+        .modal-body ul, .modal-body ol {
+            margin-left: 1.5rem;
+            margin-bottom: 1rem;
+        }
+
+        .modal-body li {
+            margin-bottom: 0.5rem;
+        }
+
+        /* Soal Section */
+        .token-input {
+            display: flex;
+            gap: 0.8rem;
+            margin-bottom: 1rem;
+        }
+
+        .token-input input {
+            flex: 1;
+        }
+
+        .exam-info {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 1.5rem;
+            padding: 1rem;
+            background-color: rgba(52, 152, 219, 0.1);
+            border-radius: var(--border-radius);
+            font-weight: 500;
+        }
+
+        body.dark-mode .exam-info {
+            background-color: rgba(52, 152, 219, 0.2);
+        }
+
+        .question-container {
+            display: none;
+        }
+
+        .question-container.active {
+            display: block;
+        }
+
+        .question {
+            margin-bottom: 1.5rem;
+        }
+
+        .question-text {
+            font-weight: 600;
+            margin-bottom: 1.2rem;
+            font-size: 1.1rem;
+        }
+
+        .options {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 0.8rem;
+        }
+
+        .option {
+            padding: 1rem;
+            border: 1px solid #ddd;
+            border-radius: var(--border-radius);
+            cursor: pointer;
+            transition: var(--transition);
+            background-color: white;
+        }
+
+        body.dark-mode .option {
+            border-color: #555;
+            background-color: #333;
+        }
+
+        .option:hover {
+            background-color: rgba(52, 152, 219, 0.1);
+            transform: translateX(5px);
+        }
+
+        body.dark-mode .option:hover {
+            background-color: rgba(52, 152, 219, 0.2);
+        }
+
+        .option.selected {
+            background-color: rgba(52, 152, 219, 0.2);
+            border-color: var(--primary-color);
+            transform: translateX(5px);
+        }
+
+        .navigation {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 2rem;
+        }
+
+        .question-indicator {
+            display: flex;
+            justify-content: center;
+            gap: 0.5rem;
+            margin: 1.5rem 0;
+            flex-wrap: wrap;
+        }
+
+        .indicator-dot {
+            width: 14px;
+            height: 14px;
+            border-radius: 50%;
+            background-color: #ddd;
+            cursor: pointer;
+            transition: var(--transition);
+        }
+
+        .indicator-dot.active {
+            background-color: var(--primary-color);
+            transform: scale(1.2);
+        }
+
+        /* Hasil Ujian Section */
+        .result-container {
+            text-align: center;
+            padding: 2rem;
+        }
+
+        .result-title {
+            font-size: 2rem;
+            color: var(--primary-color);
+            margin-bottom: 1rem;
+            font-weight: 600;
+        }
+
+        .score-display {
+            display: flex;
+            justify-content: center;
+            gap: 1rem;
+            margin: 2.5rem 0;
+            flex-wrap: wrap;
+        }
+
+        .score-box {
+            background: var(--gradient-primary);
+            border-radius: var(--border-radius);
+            padding: 1.5rem;
+            box-shadow: var(--box-shadow);
+            min-width: 180px;
+            color: white;
+            transition: var(--transition);
+            flex: 1;
+            max-width: 220px;
+        }
+
+        .score-box:hover {
+            transform: translateY(-5px);
+        }
+
+        body.dark-mode .score-box {
+            background: linear-gradient(135deg, #2c3e50, #1a252f);
+        }
+
+        .score-label {
+            font-size: 1rem;
+            color: rgba(255, 255, 255, 0.9);
+            margin-bottom: 0.5rem;
+        }
+
+        .score-value {
+            font-size: 2.5rem;
+            font-weight: bold;
+            color: white;
+        }
+
+        .chart-container {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 1.5rem;
+            margin: 2.5rem 0;
+            justify-content: center;
+        }
+
+        .chart-box {
+            flex: 1;
+            min-width: 320px;
+            max-width: 450px;
+            background-color: white;
+            border-radius: var(--border-radius);
+            padding: 1.5rem;
+            box-shadow: var(--box-shadow);
+            transition: var(--transition);
+        }
+
+        .chart-box:hover {
+            transform: translateY(-5px);
+        }
+
+        body.dark-mode .chart-box {
+            background-color: #333;
+        }
+
+        /* Sertifikat Section */
+        .certificate-form {
+            display: flex;
+            gap: 1rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .certificate-form input {
+            flex: 1;
+        }
+
+        .share-options {
+            display: flex;
+            gap: 1.5rem;
+            margin-top: 1.5rem;
+            flex-wrap: wrap;
+        }
+
+        .share-btn {
+            display: flex;
+            align-items: center;
+            gap: 0.8rem;
+            padding: 0.8rem 1.5rem;
+            border-radius: var(--border-radius);
+            cursor: pointer;
+            transition: var(--transition);
+            font-weight: 500;
+            box-shadow: var(--box-shadow);
+        }
+
+        .share-btn:hover {
+            transform: translateY(-3px);
+            opacity: 0.9;
+        }
+
+        .whatsapp-btn {
+            background: linear-gradient(135deg, #25D366, #128C7E);
+            color: white;
+        }
+
+        .download-btn {
+            background: var(--gradient-primary);
+            color: white;
+        }
+
+        /* Progress Section */
+        .progress-container {
+            margin-bottom: 2.5rem;
+            background-color: white;
+            padding: 1.5rem;
+            border-radius: var(--border-radius);
+            box-shadow: var(--box-shadow);
+        }
+
+        body.dark-mode .progress-container {
+            background-color: #333;
+        }
+
+        .progress-bar {
+            height: 20px;
+            background-color: #eee;
+            border-radius: 10px;
+            margin-bottom: 0.8rem;
+            overflow: hidden;
+        }
+
+        body.dark-mode .progress-bar {
+            background-color: #444;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: var(--gradient-primary);
+            width: 0;
+            transition: width 0.5s ease;
+            display: flex;
+            align-items: center;
+            justify-content: flex-end;
+            padding-right: 10px;
+            color: white;
+            font-size: 0.8rem;
+            font-weight: 500;
+        }
+
+        .progress-text {
+            display: flex;
+            justify-content: space-between;
+            font-size: 0.9rem;
+            color: var(--text-light);
+            font-weight: 500;
+        }
+
+        /* Notification Styles */
+        .notification {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            padding: 1rem 1.5rem;
+            border-radius: var(--border-radius);
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            box-shadow: var(--box-shadow);
+            transform: translateY(100px);
+            opacity: 0;
+            transition: all 0.3s ease;
+            z-index: 1000;
+            max-width: 350px;
+        }
+
+        .notification.show {
+            transform: translateY(0);
+            opacity: 1;
+        }
+
+        .notification.success {
+            background: var(--gradient-success);
+            color: white;
+        }
+
+        .notification.error {
+            background: linear-gradient(135deg, #e74c3c, #c0392b);
+            color: white;
+        }
+
+        .notification.info {
+            background: linear-gradient(135deg, #3498db, #2980b9);
+            color: white;
+        }
+
+        .notification i {
+            font-size: 1.8rem;
+        }
+
+        .notification-content {
+            flex: 1;
+            font-weight: 500;
+        }
+
+        .close-notif {
+            background: none;
+            border: none;
+            color: white;
+            font-size: 1.5rem;
+            cursor: pointer;
+            padding: 0 0.5rem;
+            transition: var(--transition);
+        }
+
+        .close-notif:hover {
+            transform: scale(1.2);
+        }
+
+        /* Floating Action Buttons */
+        .fab-container {
+            position: fixed;
+            bottom: 2rem;
+            right: 2rem;
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+            z-index: 999;
+        }
+
+        .fab {
+            width: 56px;
+            height: 56px;
+            border-radius: 50%;
+            background: var(--gradient-primary);
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: var(--box-shadow);
+            cursor: pointer;
+            transition: var(--transition);
+        }
+
+        .fab:hover {
+            transform: scale(1.1) translateY(-5px);
+        }
+
+        .fab i {
+            font-size: 1.5rem;
+        }
+
+        .fab-theme {
+            background: var(--dark-color);
+        }
+
+        /* Responsive Styles */
+        @media (max-width: 768px) {
+            .header-container {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+
+            .menu-toggle {
+                display: block;
+                position: absolute;
+                top: 1.5rem;
+                right: 1rem;
+            }
+
+            .main-menu {
+                display: none;
+                flex-direction: column;
+                width: 100%;
+                margin-top: 1rem;
+                background-color: var(--primary-color);
+                border-radius: var(--border-radius);
+                padding: 1rem;
+            }
+
+            body.dark-mode .main-menu {
+                background-color: var(--dark-color);
+            }
+
+            .main-menu.active {
+                display: flex;
+            }
+
+            .menu-item {
+                flex-direction: row;
+                justify-content: flex-start;
+                gap: 1rem;
+                padding: 1rem 0;
+                border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            }
+
+            body.dark-mode .menu-item {
+                border-bottom-color: #444;
+            }
+
+            .tooltip {
+                display: none;
+            }
+
+            .chart-container {
+                flex-direction: column;
+            }
+
+            .score-display {
+                flex-direction: column;
+                gap: 1.5rem;
+            }
+            
+            .certificate-form {
+                flex-direction: column;
+            }
+            
+            .share-options {
+                justify-content: center;
+            }
+            
+            .score-box {
+                max-width: 100%;
+            }
+        }
+    </style>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600&display=swap" rel="stylesheet">
+</head>
+<body>
+    <!-- Notification Area -->
+    <div class="notification" id="notification">
+        <i class="fas fa-check-circle"></i>
+        <div class="notification-content">Pesan notifikasi</div>
+        <button class="close-notif">&times;</button>
+    </div>
+    
+    <header>
+        <div class="header-container">
+            <div class="logo">
+                <i class="fas fa-laptop-code"></i>
+                <div class="logo-text">
+                    <h1>LMS SMK FAJAR</h1>
+                    <p>Informatika - Kelas 10 PM 2</p>
+                </div>
+            </div>
+            
+            <button class="menu-toggle" onclick="toggleMenu()">
+                <i class="fas fa-bars"></i>
+            </button>
+            
+            <nav class="main-menu" id="mainMenu">
+                <div class="menu-item active" onclick="navigateToSection('absensi')">
+                    <i class="fas fa-calendar-check"></i>
+                    <span>Absensi</span>
+                    <span class="tooltip">Isi kehadiran harian</span>
+                </极速赛车开奖官网开奖记录>
+                <div class="menu-item" onclick="navigateToSection('materi')">
+                    <i class="fas fa-book"></i>
+                    <span>Materi</span>
+                    <span class="tooltip">Pelajari materi pembelajaran</span>
+                </div>
+                <div class="menu-item" onclick="navigateToSection('token')">
+                    <i class="fas fa-key"></i>
+                    <span>Token</span>
+                    <span class="tooltip">Masukkan token ujian</span>
+                </div>
+                <div class="menu-item" onclick="navigateToSection('soal')">
+                    <i class="fas fa-file-alt"></i>
+                    <span>Soal</span>
+                    <span class="tooltip">Kerjakan latihan soal</span>
+                </div>
+                <div class="menu-item" onclick="navigateToSection('sertifikat')">
+                    <i class="fas fa-award"></i>
+                    <span>Sertifikat</span>
+                    <span class="tooltip">Unduh sertifikat</span>
+                </div>
+            </nav>
+        </div>
+    </header>
+    
+    <!-- Main Content -->
+    <div class="container">
+        <!-- Absensi Section -->
+        <section id="absensi" class="section">
+            <h2 class="section-title"><i class="fas fa-calendar-check"></i> Absensi Harian</h2>
+            <div class="form-group">
+                <label for="namaSiswa">Nama Lengkap</label>
+                <input type="text" id="namaSiswa" placeholder="Masukkan nama lengkap" value="Nama Siswa">
+            </div>
+            <div class="form-group">
+                <label for="emailSiswa">Email</label>
+                <input type="email" id="emailSiswa" placeholder="Masukkan email aktif" value="siswa@smkfajar.sch.id">
+            </div>
+            <div class="form-group">
+                <label for="absenStatus">Status Kehadiran</label>
+                <select id="absenStatus">
+                    <option value="">Pilih status kehadiran</option>
+                    <option value="hadir" selected>Hadir</option>
+                    <option value="izin">Izin</option>
+                    <option value="sakit">Sakit</option>
+                    <option value="alpa">Alpa</option>
+                </select>
+            </div>
+            <button onclick="kirimAbsensi()">Kirim Absensi</button>
+            <div id="statusAbsensi" class="status"></div>
+        </section>
+        
+        <!-- Materi Section -->
+        <section id="materi" class="section">
+            <h2 class="section-title"><i class="fas fa-book"></i> Materi Pembelajaran</h2>
+            
+            <div class="materi-content" id="materi1">
+                <h2>Materi 1: Pengantar Informatika</h2>
+                <p>Informatika adalah disiplin ilmu yang mempelajari tentang pengolahan informasi dengan menggunakan komputer. Materi ini mencakup sejarah perkembangan komputer, konsep dasar pemrograman, dan aplikasi teknologi informasi dalam kehidupan sehari-hari.</p>
+                
+                <div class="materi-meta">
+                    <div>
+                        <i class="far fa-clock"></i> Durasi: <span id="durasiMateri1">0 menit 0 detik</span>
+                    </div>
+                    <div class="action-buttons">
+                        <button class="btn btn-primary" onclick="openModal(1)">Baca Lengkap</button>
+                        <button class="btn btn-outline" id="bookmarkMateri1" onclick="toggleBookmark('Materi1')">
+                            <i class="far fa-bookmark"></i> Bookmark
+                        </button>
+                    </div>
+                </div>
+                
+                <div class="checkbox-container">
+                    <input type="checkbox" id="baca1" onchange="updateProgress()">
+                    <label for="baca1">Saya telah membaca dan memahami materi ini</label>
+                </div>
+                
+                <div class="poin-info">
+                    <i class="fas fa-info-circle"></i> Poin membaca: <span id="poinMateri1">0</span>/10 (1 poin per menit, maks 10 poin)
+                </div>
+                
+                <div class="form-group">
+                    <label for="refleksi1">Refleksi Pembelajaran</label>
+                    <textarea id="refleksi1" rows="3" placeholder="Tuliskan pemahaman dan refleksi Anda setelah mempelajari materi ini">Setelah mempelajari materi ini, saya memahami bahwa informatika bukan hanya tentang pemrograman tetapi mencakup berbagai aspek pengolahan informasi. Saya tertarik untuk mempelajari lebih dalam tentang sejarah perkembangan komputer dan aplikasinya dalam kehidupan modern.</textarea>
+                    <button class="btn btn-secondary" onclick="kirimRefleksi(1)">Kirim Refleksi</button>
+                    <div id="statusRefleksi1" class="status"></div>
+                </div>
+            </div>
+            
+            <div class="materi-content" id="materi2">
+                <h2>Materi 2: Perangkat Keras dan Lunak</h2>
+                <p>Materi ini membahas komponen-komponen perangkat keras komputer seperti CPU, RAM, penyimpanan, dan perangkat input/output. Juga mencakup pengenalan berbagai jenis perangkat lunak mulai dari sistem operasi hingga aplikasi produktivitas.</p>
+                
+                <div class极速赛车开奖官网开奖记录>
+                    <div>
+                        <i class="far fa-clock"></i> Durasi: <span id="durasiMateri2">0 menit 0 detik</span>
+                    </div>
+                    <div class="action-buttons">
+                        <button class="btn btn-primary" onclick="openModal(2)">Baca Lengkap</button>
+                        <button class="btn btn-outline" id="bookmarkMateri2" onclick="toggleBookmark('Materi2')">
+                            <i class="far fa-bookmark"></i> Bookmark
+                        </button>
+                    </div>
+                </div>
+                
+                <div class="checkbox-container">
+                    <input type="checkbox" id="baca2" onchange="updateProgress()">
+                    <label for="baca2">Saya telah membaca dan memahami materi ini</label>
+                </div>
+                
+                <div class="poin-info">
+                    <i class="fas fa-info-circle"></i> Poin membaca: <span id="poinMateri2">0</span>/10 (1 poin per menit, maks 10 poin)
+                </div>
+                
+                <div class="form-group">
+                    <label for="refleksi2">Refleksi Pembelajaran</label>
+                    <textarea id="refleksi2" rows="3" placeholder="Tuliskan pemahaman dan refleksi Anda setelah mempelajari materi ini">Materi ini membantu saya memahami perbedaan antara perangkat keras dan lunak. Saya menyadari pentingnya setiap komponen dalam sistem komputer dan bagaimana mereka bekerja sama. Saya ingin mempelajari lebih dalam tentang arsitektur komputer modern.</textarea>
+                    <button class="btn btn-secondary" onclick="kirimRefleksi(2)">Kirim Refleksi</button>
+                    <div id="statusRefleksi2" class="status"></div>
+                </div>
+            </div>
+            
+            <div class="materi-content" id="materi3">
+                <h2>Materi 3: Jaringan Komputer</h2>
+                <p>Pembelajaran tentang konsep dasar jaringan komputer, protokol jaringan, topologi jaringan, dan keamanan jaringan. Materi ini penting untuk memahami bagaimana komputer berkomunikasi satu sama lain dalam jaringan lokal maupun internet.</p>
+                
+                <div class="materi-meta">
+                    <div>
+                        <i class="far fa-clock"></i> Durasi: <span id="durasiMateri3">0 menit 0 detik</span>
+                    </div>
+                    <div class="action-buttons">
+                        <button class="btn btn-primary" onclick="openModal(3)">Baca Lengkap</button>
+                        <button class="btn btn-outline" id="bookmarkMateri3" onclick="toggleBookmark('Materi3')">
+                            <i class="far fa-bookmark"></i> Bookmark
+                        </button>
+                    </div>
+                </div>
+                
+                <div class="checkbox-container">
+                    <input type="checkbox" id="baca3" onchange="updateProgress()">
+                    <label for="baca3">Saya telah membaca dan memahami materi ini</label>
+                </div>
+                
+                <div class="poin-info">
+                    <i class="fas fa-info-circle"></i> Poin membaca: <span id="poinMateri3">0</span>/10 (1 poin per menit, maks 10 poin)
+                </div>
+                
+                <div class="form-group">
+                    <label for="refleksi3">Refleksi Pembelajaran</label>
+                    <textarea id="refleksi3" rows="3" placeholder="Tuliskan pemahaman dan refleksi Anda setelah mempelajari materi ini">Jaringan komputer ternyata sangat kompleks namun menarik. Saya belajar tentang berbagai topologi jaringan dan bagaimana data ditransmisikan. Saya ingin memahami lebih dalam tentang protokol TCP/IP dan keamanan jaringan yang menjadi tantangan di era digital ini.</textarea>
+                    <button class="btn btn-secondary" onclick="kir极速赛车开奖官网开奖记录Refleksi(3)">Kirim Refleksi</button>
+                    <div id="statusRefleksi3" class="status"></div>
+                </div>
+            </div>
+            
+            <div class="materi-content" id="materi4">
+                <h2>Materi 4: Etika Digital dan Keamanan</h2>
+                <p>Materi ini membahas tentang etika dalam menggunakan teknologi digital, hak kekayaan intelektual, privasi data, dan praktik keamanan digital untuk melindungi diri dari ancaman dunia maya.</p>
+                
+                <div class="materi-meta">
+                    <div>
+                        <i class="far fa-clock"></i> Durasi: <span id="durasiMateri4">0 menit 0 detik</span>
+                    </div>
+                    <div class="action-buttons">
+                        <button class="btn btn-primary" onclick="openModal(4)">Baca Lengkap</button>
+                        <button class="btn btn-outline" id="bookmarkMateri4" onclick="toggleBookmark('Materi4')">
+                            <i class="far fa-bookmark"></i> Bookmark
+                        </button>
+                    </div>
+                </div>
+                
+                <div class="checkbox-container">
+                    <input type="checkbox" id="baca4" onchange="updateProgress()">
+                    <label for="baca4">Saya telah membaca dan memahami materi ini</label>
+                </div>
+                
+                <div class="poin-info">
+                    <i class="fas fa-info-circle"></i> Poin membaca: <span id="poinMateri4">0</span>/10 (1 poin per menit, maks 10 poin)
+                </div>
+                
+                <div class="form-group">
+                    <label for="refleksi4">Refleksi Pembelajaran</label>
+                    <textarea id="refleksi4" rows="3" placeholder="Tuliskan pemahaman dan refleksi Anda setelah mempelajari materi ini">Etika digital adalah aspek penting yang sering diabaikan. Materi ini membuka mata saya tentang pentingnya privasi dan keamanan data. Saya akan lebih berhati-hati dalam beraktivitas online dan menerapkan praktik keamanan yang telah dipelajari untuk melindungi identitas digital saya.</textarea>
+                    <button class="btn btn-secondary" onclick="kirimRefleksi(4)">Kirim Refleksi</button>
+                    <div id="statusRefleksi4" class="status"></div>
+                </div>
+            </div>
+        </section>
+        
+        <!-- Token Section -->
+        <section id="token" class="section">
+            <h2 class="section-title"><i class="fas fa-key"></i> Token Ujian</h2>
+            <p>Masukkan token ujian yang diberikan oleh guru untuk memulai ujian akhir modul.</p>
+            
+            <div class="token-input">
+                <input type="text" id="tokenUjian" placeholder="Masukkan token ujian" value="INF10UJIAN2025">
+                <button onclick="verifikasiToken()">Verifikasi</button>
+            </div>
+            
+            <div id="tokenStatus" class="status"></div>
+        </section>
+        
+        <!-- Soal Section -->
+        <section id="soal" class="section">
+            <h2 class="section-title"><i class="fas fa-file-alt"></i> Ujian Akhir Modul</h2>
+            
+            <div id="soalUjian" style="display: none;">
+                <div class="exam-info">
+                    <div>
+                        <i class="fas fa-clock"></i> Waktu: <span id="examTimer">00:00</span>
+                    </div>
+                    <div>
+                        <i class="fas fa-question-circle"></i> Soal: <span id="currentQuestion">1</span>/25
+                    </div>
+                </div>
+                
+                <!-- Container untuk semua soal -->
+                <div class="questions-container">
+                    <!-- Question 1 -->
+                    <div id="soal1" class="question-container active">
+                        <div class="question">
+                            <div class="question-text">1. Apa yang dimaksud dengan informatika?</div>
+                            <div class="options">
+                                <div class="option" onclick="selectAnswer(this, 'q1', 'a')">
+                                    A. Disiplin ilmu yang mempelajari pengolahan informasi dengan komputer
+                                </div>
+                                <div class="option" onclick="selectAnswer(this, 'q1', 'b')">
+                                    B. Ilmu tentang perangkat keras komputer saja
+                                </div>
+                                <div class="option" onclick="selectAnswer(this, 'q1', 'c')">
+                                    C. Seni membuat program komputer
+                                </div>
+                                <div class="option" onclick="selectAnswer(this, 'q1', 'd')">
+                                    D. Teknologi untuk bermain game
+                                </div>
+                            </div>
+                            <input type="radio" name="q1" value="a" style="display: none;">
+                        </div>
+                        
+                        <div class="navigation">
+                            <button disabled>Sebelumnya</button>
+                            <button onclick="showQuestion(2)">Selanjutnya</button>
+                        </div>
+                    </div>
+                    
+                    <!-- Question 2 -->
+                    <div id="soal2" class="question-container">
+                        <div class="question">
+                            <div class="question-text">2. Komponen utama CPU yang melakukan perhitungan aritmatika dan logika disebut:</div>
+                            <div class="options">
+                                <div class="option" onclick="selectAnswer(this, 'q2', 'a')">
+                                    A. ALU (Arithmetic Logic Unit)
+                                </div>
+                                <div class="option" onclick="selectAnswer(this, 'q2', 'b')">
+                                    B. CU (Control Unit)
+                                </div>
+                                <div class="option" onclick="selectAnswer(this, 'q2', 'c')">
+                                    C. RAM (Random Access Memory)
+                                </div>
+                                <div class="option" onclick="selectAnswer(this, 'q2', 'd')">
+                                    D. ROM (Read Only Memory)
+                                </div>
+                            </div>
+                            <input type="radio" name="q2" value="a" style="display: none;">
+                        </div>
+                        
+                        <div class="navigation">
+                            <button onclick="showQuestion(1)">Sebelumnya</button>
+                            <button onclick="showQuestion(3)">Selanjutnya</button>
+                        </div>
+                    </div>
+                    
+                    <!-- Question 3 -->
+                    <div id="soal3" class="question-container">
+                        <div class="question">
+                            <div class="question-text">3. Apa kepanjangan dari LAN dalam jaringan komputer?</div>
+                            <div class="options">
+                                <div class="option" onclick="selectAnswer(this, 'q3', 'a')">
+                                    A. Local Area Network
+                                </div>
+                                <div class="option" onclick="selectAnswer(this, 'q3', 'b')">
+                                    B. Large Access Network
+                                </div>
+                                <div class="option" onclick="selectAnswer(this, 'q3', 'c')">
+                                    C. Logical Area Node
+                                </div>
+                                <div class="option" onclick="selectAnswer(this, 'q3', 'd')">
+                                    D. Linked Access Network
+                                </div>
+                            </div>
+                            <input type="radio" name="q3" value="a" style="display: none;">
+                        </div>
+                        
+                        <div class="navigation">
+                            <button onclick="showQuestion(2)">Sebelumnya</button>
+                            <button onclick="showQuestion(4)">Selanjutnya</button>
+                        </div>
+                    </div>
+                    
+                    <!-- Question 4 -->
+                    <div id="soal4" class="question-container">
+                        <div class="question">
+                            <div class="question-text">4. Protokol jaringan yang bertanggung jawab untuk pengalamatan perangkat adalah:</div>
+                            <div class="options">
+                                <div class="option" onclick="selectAnswer(this, 'q4', 'a')">
+                                    A. HTTP
+                                </div>
+                                <div class="option" onclick="selectAnswer(this, 'q4', 'b')">
+                                    B. FTP
+                                </div>
+                                <div class="option" onclick="selectAnswer(this, 'q4', 'c')">
+                                    C. IP
+                                </div>
+                                <div class="option" onclick="selectAnswer(this, 'q4', 'd')">
+                                    D. TCP
+                                </div>
+                            </div>
+                            <input type="radio" name="q4" value="c" style极速赛车开奖官网开奖记录display: none;">
+                        </div>
+                        
+                        <div class="navigation">
+                            <button onclick="showQuestion(3)">Sebelumnya</button>
+                            <button onclick="showQuestion(5)">Selanjutnya</button>
+                        </div>
+                    </div>
+                    
+                    <!-- Question 5 -->
+                    <div id="soal5" class="question-container">
+                        <div class="question">
+                            <div class="question-text">5. Manakah yang BUKAN termasuk perangkat keras komputer?</div>
+                            <div class="options">
+                                <div class="option" onclick="selectAnswer(this, 'q5', 'a')">
+                                    A. CPU
+                                </div>
+                                <div class="option" onclick="selectAnswer(this, 'q5', '极速赛车开奖官网开奖记录')">
+                                    B. RAM
+                                </div>
+                                <div class="option" onclick="selectAnswer(this, 'q5', 'c')">
+                                    C. Windows 10
+                                </div>
+                                <div class="option" onclick="selectAnswer(this, 'q5', 'd')">
+                                    D. Motherboard
+                                </div>
+                            </div>
+                            <input type="radio" name="q5" value="c" style="display: none;">
+                        </div>
+                        
+                        <div class="navigation">
+                            <button onclick="showQuestion(4)">Sebelumnya</button>
+                            <button onclick="showQuestion(6)">Selanjutnya</button>
+                        </div>
+                    </div>
+                    
+                    <!-- Question 6 -->
+                    <div id="soal6" class="question-container">
+                        <div class="question">
+                            <div class="question-text">6. Sistem bilangan yang digunakan komputer untuk memproses data adalah:</div>
+                            <div class="options">
+                                <div class="option" onclick="selectAnswer(this, 'q6', 'a')">
+                                    A. Desimal
+                                </div>
+                                <div class="option" onclick="selectAnswer(this, 'q6', 'b')">
+                                    B. Biner
+                                </div>
+                                <div class="option" onclick="selectAnswer(this, 'q6', 'c')">
+                                    C. Heksadesimal
+                                </div>
+                                <div class="option" onclick="selectAnswer(this, 'q6', 'd')">
+                                    D. Oktal
+                                </div>
+                            </div>
+                            <input type="radio" name="q6" value="b" style="display: none;">
+                        </div>
+                        
+                        <div class="navigation">
+                            <button onclick="showQuestion(5)">Sebelumnya</button>
+                            <button onclick="showQuestion(7)">Selanjutnya</button>
+                        </div>
+                    </div>
+                    
+                    <!-- Question 7 -->
+                    <div id="soal7" class="question-container">
+                        <div class="question">
+                            <div class="question-text">7. Bahasa pemrograman yang paling cocok untuk pengembangan web frontend adalah:</div>
+                            <div class="options">
+                                <div class="option" onclick="selectAnswer(this, 'q7', 'a')">
+                                    A. JavaScript
+                                </div>
+                                <div class="option" onclick="selectAnswer(this, 'q7', 'b')">
+                                    B. Python
+                                </div>
+                                <div class="option" onclick="selectAnswer(this, 'q7', 'c')">
+                                    C. Java
+                                </div>
+                                <div class="option" onclick="selectAnswer(this, 'q7', 'd')">
+                                    D. C++
+                                </div>
+                            </div>
+                            <input type="radio" name="q7" value="a" style="display: none;">
+                        </div>
+                        
+                        <div class="navigation">
+                            <button onclick="showQuestion(6)">Sebelumnya</button>
+                            <button onclick="showQuestion(8)">Selanjutnya</button>
+                        </div>
+                    </div>
+                    
+                    <!-- Question 8 -->
+                    <div id="soal8" class="question-container">
+                        <div class="question">
+                            <div class="question-text">8. Manakah yang merupakan perangkat lunak sistem operasi?</div>
+                            <div class="options">
+                                <div class="option" onclick="selectAnswer(this, 'q8', 'a')">
+                                    A. Microsoft Word
+                                </div>
+                                <div class="option" onclick="selectAnswer(this, 'q8', 'b')">
+                                    B. Adobe Photoshop
+                                </div>
+                                <div class="option" onclick="selectAnswer(this, 'q8', 'c')">
+                                    C. Windows 11
+                                </div>
+                                <div class="option" onclick="selectAnswer(this, 'q8', 'd')">
+                                    D. Google Chrome
+                                </div>
+                            </div>
+                            <input type="radio" name="q8" value="c" style="display: none;">
+                        </div>
+                        
+                        <div class="navigation">
+                            <button onclick="showQuestion(7)">Sebelumnya</button>
+                            <button onclick="showQuestion(9)">Selanjutnya</button>
+                        </div>
+                    </div>
+                    
+                    <!-- Question 9 -->
+                    <div id="soal9" class="question-container">
+                        <div class="question">
+                            <div class="question-text">9. Topologi jaringan di mana semua perangkat terhubung ke satu kabel pusat disebut:</div>
+                            <div class="options">
+                                <div class="option" onclick="selectAnswer(this, 'q9', 'a')">
+                                    A. Star
+                                </div>
+                                <div class="option" onclick="selectAnswer(this, 'q9', 'b')">
+                                    B. Ring
+                                </div>
+                                <div class="option" onclick="selectAnswer(this, 'q9', 'c')">
+                                    C. Bus
+                                </div>
+                                <div class="option" onclick="selectAnswer(this, 'q9', 'd')">
+                                    D. Mesh
+                                </div>
+                            </div>
+                            <input type="radio" name="q9" value="c" style="display: none;">
+                        </div>
+                        
+                        <div class="navigation">
+                            <button onclick="showQuestion(8)">Sebelumnya</button>
+                            <button onclick="showQuestion(10)">Selanjutnya</button>
+                        </div>
+                    </div>
+                    
+                    <!-- Question 10 -->
+                    <div id="soal10" class="question-container">
+                        <div class="question">
+                            <div class="question-text">10. Alamat unik yang diberikan ke setiap perangkat dalam jaringan disebut:</div>
+                            <div class="options">
+                                <div class="option" onclick="selectAnswer(this, 'q10', 'a')">
+                                    A. URL
+                                </div>
+                                <div class="option" onclick="selectAnswer(this, 'q10', 'b')">
+                                    B. DNS
+                                </div>
+                                <div class="option" onclick="selectAnswer(this, 'q10', 'c')">
+                                    C. IP Address
+                                </div>
+                                <div class="option" onclick="selectAnswer(this, 'q10', 'd')">
+                                    D. HTTP
+                                </div>
+                            </div>
+                            <input type="radio" name="q10" value="c" style="display: none;">
+                        </div>
+                        
+                        <div class="navigation">
+                            <button onclick="showQuestion(9)">Sebelumnya</button>
+                            <button onclick="showQuestion(11)">Selanjutnya</button>
+                        </div>
+                    </div>
+                    
+                    <!-- Question 11 -->
+                    <div id="soal11" class="question-container">
+                        <div class="question">
+                            <div class="question-text">11. Manakah yang BUKAN termasuk jenis malware?</div>
+                            <div class="options">
+                                <div class="option" onclick="selectAnswer(this, 'q11', 'a')">
+                                    A. Virus
+                                </div>
+                                <div class="option" onclick="selectAnswer(this, 'q11', 'b')">
+                                    B. Firewall
+                                </div>
+                                <div class="option" onclick="selectAnswer(this, 'q11', 'c')">
+                                    C. Trojan
+                                </div>
+                                <div class="option" onclick="selectAnswer(this, 'q11', 'd')">
+                                    D. Ransomware
+                                </div>
+                            </div>
+                            <input type="radio" name="q11" value="b" style="display: none;">
+                        </div>
+                        
+                        <div class="navigation">
+                            <button onclick="showQuestion(10)">Sebelumnya</button>
+                            <button onclick="showQuestion(12)">Selanjutnya</button>
+                        </div>
+                    </div>
+                    
+                    <!-- Question 12 -->
+                    <div id="soal12" class="question-container">
+                        <div class="question">
+                            <div class="question-text">12. Apa fungsi utama dari RAM?</div>
+                            <div class="options">
+                                <div class="option" onclick="selectAnswer(this, 'q12', 'a')">
+                                    A. Menyimpan data secara permanen
+                                </div>
+                                <div class="option" onclick="selectAnswer(this, 'q12', 'b')">
+                                    B. Menyimpan data sementara saat program dijalankan
+                                </div>
+                                <div class="option" onclick="selectAnswer(this, 'q12', 'c')">
+                                    C. Mengolah instruksi program
+                                </div>
+                                <div class="option" onclick="selectAnswer(this, 'q12', 'd')">
+                                    D. Menampilkan output ke layar
+                                </div>
+                            </div>
+                            <input type="radio" name="q12" value="b" style="display: none;">
+                        </div>
+                        
+                        <div class="navigation">
+                            <button onclick="showQuestion(11)">Sebelumnya</button>
+                            <button onclick="showQuestion(13)">Selanjutnya</button>
+                        </div>
+                    </div>
+                    
+                    <!-- Question 13 -->
+                    <div id="soal13" class="question-container">
+                        <div class="question">
+                            <div class="question-text">13. Manakah yang termasuk perangkat input?</div>
+                            <div class="options">
+                                <div class="option" onclick="selectAnswer(this, 'q13', 'a')">
+                                    A. Monitor
+                                </div>
+                                <div class="option" onclick="selectAnswer(this, 'q13', 'b')">
+                                    B. Printer
+                                </div>
+                                <div class="option" onclick="selectAnswer(this, 'q13', 'c')">
+                                    C. Keyboard
+                                </div>
+                                <div class="option" onclick="selectAnswer(this, 'q13', 'd')">
+                                    D. Speaker
+                                </div>
+                            </div>
+                            <input type="radio" name="q13" value="c" style="display: none;">
+                        </div>
+                        
+                        <div class="navigation">
+                            <button onclick="showQuestion(12)">Sebelumnya</button>
+                            <button onclick="showQuestion(14)">Selanjutnya</button>
+                        </div>
+                    </div>
+                    
+                    <!-- Question 14 -->
+                    <div id="soal14" class="question-container">
+                        <div class="question">
+                            <div class="question-text">14. Teknologi penyimpanan data yang menggunakan piringan magnetik adalah:</div>
+                            <div class="options">
+                                <div class="option" onclick="selectAnswer(this, 'q14', 'a')">
+                                    A. SSD
+                                </div>
+                                <div class="option" onclick="selectAnswer(this, 'q14', 'b')">
+                                    B. USB Flash Drive
+                                </div>
+                                <div class="option" onclick="selectAnswer(this, 'q14', 'c')">
+                                    C. HDD
+                                </div>
+                                <div class="option" onclick="selectAnswer(this, 'q14', 'd')">
+                                    D. Cloud Storage
+                                </div>
+                            </div>
+                            <input type="radio" name="q14" value="c" style="display: none;">
+                        </div>
+                        
+                        <div class="navigation">
+                            <button onclick="showQuestion(13)">Sebelumnya</button>
+                            <button onclick="showQuestion(15)">Selanjutnya</button>
+                        </div>
+                    </div>
+                    
+                    <!-- Question 15 -->
+                    <div id="soal15" class="question-container">
+                        <div class="question">
+                            <div class="question-text">15. Manakah yang merupakan contoh sistem operasi open source?</div>
+                            <div class="options">
+                                <div class="option" onclick="selectAnswer(this, 'q15', 'a')">
+                                    A. Windows
+                                </div>
+                                <div class="option" onclick="selectAnswer(this, 'q15', 'b')">
+                                    B. macOS
+                                </div>
+                                <div class="option" onclick="selectAnswer(this, 'q15', 'c')">
+                                    C. Linux
+                                </div>
+                                <div class="option" onclick="selectAnswer(this, 'q15', 'd')">
+                                    D. iOS
+                                </div>
+                            </div>
+                            <input type="radio" name="q15" value="c" style="display: none;">
+                        </div>
+                        
+                        <div class="navigation">
+                            <button onclick="showQuestion(14)">Sebelumnya</button>
+                            <button onclick="showQuestion(16)">Selanjutnya</button>
+                        </div>
+                    </div>
+                    
+                    <!-- Question 16 -->
+                    <div id="soal16" class="question-container">
+                        <div class="question">
+                            <div class="question-text">16. Protokol yang digunakan untuk mengirim email adalah:</div>
+                            <div class="options">
+                                <div class="option" onclick="selectAnswer(this, 'q16', 'a')">
+                                    A. SMTP
+                                </div>
+                                <div class="option" onclick="selectAnswer(this, 'q16', 'b')">
+                                    B. HTTP
+                                </div>
+                                <div class="option" onclick="selectAnswer(this, 'q16', 'c')">
+                                    C. FTP
+                                </div>
+                                <div class="option" onclick="selectAnswer(this, 'q16', 'd')">
+                                    D. POP3
+                                </div>
+                            </div>
+                            <input type="radio" name="q16" value="a" style="display: none;">
+                        </div>
+                        
+                        <div class="navigation">
+                            <button onclick="showQuestion(15)">Sebelumnya</button>
+                            <button onclick="showQuestion(17)">Selanjutnya</极速赛车开奖官网开奖记录>
+                        </div>
+                    </div>
+                    
+                    <!-- Question 17 -->
+                    <div id="soal17" class="question-container">
+                        <div class="question">
+                            <div class="question-text">17. Apa kepanjangan dari URL?</div>
+                            <div class="options">
+                                <div class="option" onclick="selectAnswer(this, 'q17', 'a')">
+                                    A. Uniform Resource Locator
+                                </div>
+                                <div class="option" onclick="selectAnswer(this, 'q17', 'b')">
+                                    B. Universal Resource Link
+                                </div>
+                                <div class="option" onclick="selectAnswer(this, 'q17', 'c')">
+                                    C. Uniform Resource Link
+                                </div>
+                                <div class="option" onclick="selectAnswer(this, 'q17', 'd')">
+                                    D. Universal Resource Locator
+                                </div>
+                            </div>
+                            <input type="radio" name="q17" value="a" style="display: none;">
+                        </div>
+                        
+                        <div class="navigation">
+                            <button onclick="showQuestion(16)">Sebelumnya</button>
+                            <button onclick="showQuestion(18)">Selanjutnya</button>
+                        </div>
+                    </div>
+                    
+                    <!-- Question 18 -->
+                    <div id="soal18" class="question-container">
+                        <div class="question">
+                            <div class="question-text">18. Manakah yang termasuk bahasa pemrograman tingkat tinggi?</div>
+                            <div class="options">
+                                <div class="option" onclick="selectAnswer(this, 'q18', 'a')">
+                                    A. Assembly
+                                </div>
+                                <div class="option" onclick="selectAnswer(this, 'q18', 'b')">
+                                    B. Python
+                                </div>
+                                <div class="option" onclick="selectAnswer(this, 'q18', 'c')">
+                                    C. Machine Code
+                                </div>
+                                <div class="option" onclick="selectAnswer(this, 'q18', 'd')">
+                                    D. Binary Code
+                                </div>
+                            </div>
+                            <input type="radio" name="q18" value="b" style="display: none;">
+                        </div>
+                        
+                        <div class="navigation">
+                            <button onclick="showQuestion(17)">Sebelumnya</button>
+                            <button onclick="showQuestion(19)">Selanjutnya</button>
+                        </div>
+                    </div>
+                    
+                    <!-- Question 19 -->
+                    <div id="soal19" class="question-container">
+                        <div class="question">
+                            <div class="question-text">19. Alat untuk mengukur kecepatan prosesor adalah:</div>
+                            <div class="options">
+                                <div class="option" onclick="selectAnswer(this, 'q19', 'a')">
+                                    A. Hertz (Hz)
+                                </div>
+                                <div class="option" onclick="selectAnswer(this, 'q19', 'b')">
+                                    B. Watt (W)
+                                </div>
+                                <div class="option" onclick="selectAnswer(this, 'q19', 'c')">
+                                    C. Volt (V)
+                                </div>
+                                <div class="option" onclick="selectAnswer(this, 'q19', 'd')">
+                                    D. Ampere (A)
+                                </div>
+                            </div>
+                            <input type="radio" name="q19" value="a" style="display: none;">
+                        </div>
+                        
+                        <div class="navigation">
+                            <button onclick="showQuestion(18)">Sebelumnya</button>
+                            <button onclick="showQuestion(20)">Selanjutnya</button>
+                        </div>
+                    </div>
+                    
+                    <!-- Question 20 -->
+                    <div id="soal20" class="question-container">
+                        <div class="question">
+                            <div class="question-text">20. Manakah yang BUKAN termasuk jenis database?</div>
+                            <div class="options">
+                                <div class="option" onclick="selectAnswer(this, 'q20', 'a')">
+                                    A. Relasional
+                                </div>
+                                <div class="option" onclick="selectAnswer(this, 'q20', 'b')">
+                                    B. Hierarkis
+                                </div>
+                                <div class="option" onclick="selectAnswer(this, 'q20', 'c')">
+                                    C. Jaringan
+                                </div>
+                                <div class="option" onclick="selectAnswer(this, 'q20', 'd')">
+                                    D. Linear
+                                </div>
+                            </div>
+                            <input type="radio" name="q20" value="d" style="display: none;">
+                        </div>
+                        
+                        <div class="navigation">
+                            <button onclick="showQuestion(19)">Sebelumnya</button>
+                            <button onclick="showQuestion(21)">Selanjutnya</button>
+                        </div>
+                    </div>
+                    
+                    <!-- Question 21 -->
+                    <div id="soal21" class="question-container">
+                        <div class="question">
+                            <div class="question-text">21. Apa fungsi dari komponen "Motherboard"?</div>
+                            <div class="options">
+                                <div class="option" onclick="selectAnswer(this, 'q21', 'a')">
+                                    A. Menghubungkan semua komponen komputer
+                                </div>
+                                <div class="option" onclick="selectAnswer(this, 'q21', 'b')">
+                                    B. Menyimpan data secara permanen
+                                </div>
+                                <div class="option" onclick="selectAnswer(this, 'q21', 'c')">
+                                    C. Mengolah grafis
+                                </div>
+                                <div class="option" onclick="selectAnswer(this, 'q21', 'd')">
+                                    D. Menampilkan gambar
+                                </div>
+                            </div>
+                            <input type="radio" name="q21" value="a" style="display: none;">
+                        </div>
+                        
+                        <div class="navigation">
+                            <button onclick="showQuestion(20)">Sebelumnya</button>
+                            <button onclick="showQuestion(22)">Selanjutnya</button>
+                        </div>
+                    </div>
+                    
+                    <!-- Question 22 -->
+                    <div id="soal22" class="question-container">
+                        <div class="question">
+                            <div class="question-text">22. Manakah yang merupakan perangkat jaringan?</div>
+                            <div class="options">
+                                <div class="option" onclick="selectAnswer(this, 'q22', 'a')">
+                                    A. Router
+                                </div>
+                                <div class="option" onclick="selectAnswer(this, 'q22', 'b')">
+                                    B. Monitor
+                                </div>
+                                <div class="option" onclick="selectAnswer(this, 'q22', 'c')">
+                                    C. Speaker
+                                </div>
+                                <div class="option" onclick="selectAnswer(this, 'q22', 'd')">
+                                    D. Mouse
+                                </div>
+                            </div>
+                            <input type="radio" name="q22" value="a" style="display: none;">
+                        </div>
+                        
+                        <div class="navigation">
+                            <button onclick="showQuestion(21)">Sebelumnya</button>
+                            <button onclick="showQuestion(23)">Selanjutnya</button>
+                        </div>
+                    </div>
+                    
+                    <!-- Question 23 -->
+                    <div id="soal23" class="question-container">
+                        <div class="question">
+                            <div class="question-text">23. Teknologi nirkabel untuk pertukaran data jarak dekat adalah:</div>
+                            <div class="options">
+                                <div class="option" onclick="selectAnswer(this, 'q23', 'a')">
+                                    A. Bluetooth
+                                </div>
+                                <div class="option" onclick="selectAnswer(this, 'q23', 'b')">
+                                    B. 4G
+                                </div>
+                                <div class="option" onclick="selectAnswer(this, 'q23', 'c')">
+                                    C. WiMAX
+                                </div>
+                                <div class="option" onclick="selectAnswer(this, 'q23', 'd')">
+                                    D. Fiber Optic
+                                </div>
+                            </div>
+                            <input type="radio" name="q23" value="a" style="display: none;">
+                        </div>
+                        
+                        <div class="navigation">
+                            <button onclick="showQuestion(22)">Sebelumnya</button>
+                            <button onclick="showQuestion(24)">Selanjutnya</button>
+                        </div>
+                    </div>
+                    
+                    <!-- Question 24 -->
+                    <div id="soal24" class="question-container">
+                        <div class="question">
+                            <div class="question-text">24. Manakah yang termasuk keamanan digital?</div>
+                            <div class="options">
+                                <div class="option" onclick="selectAnswer(this, 'q24', 'a')">
+                                    A. Antivirus
+                                </div>
+                                <div class="option" onclick="selectAnswer(this, 'q24', 'b')">
+                                    B. Game
+                                </div>
+                                <div class="option" onclick="selectAnswer(this, 'q24', 'c')">
+                                    C. Browser
+                                </div>
+                                <div class="option" onclick="selectAnswer(this, 'q24', 'd')">
+                                    D. Media Player
+                                </div>
+                            </div>
+                            <input type="radio" name="q24" value="a" style="display: none;">
+                        </div>
+                        
+                        <div class="navigation">
+                            <button onclick="showQuestion(23)">Sebelumnya</button>
+                            <button onclick="showQuestion(25)">Selanjutnya</button>
+                        </div>
+                    </div>
+                    
+                    <!-- Question 25 -->
+                    <div id="soal25" class="question-container">
+                        <div class="question">
+                            <div class="question-text">25. Manakah yang BUKAN termasuk etika digital?</div>
+                            <div class="options">
+                                <div class="option" onclick="selectAnswer(this, 'q25', 'a')">
+                                    A. Menghormati hak cipta
+                                </div>
+                                <div class="option" onclick="selectAnswer(this, 'q25', 'b')">
+                                    B. Menyebarkan informasi pribadi orang lain tanpa izin
+                                </div>
+                                <div class="option" onclick="selectAnswer(this, 'q25', 'c')">
+                                    C. Menggunakan password yang kuat
+                                </div>
+                                <div class="option" onclick="selectAnswer(this, 'q25', 'd')">
+                                    D. Menghindari penyebaran hoax
+                                </div>
+                            </div>
+                            <input type="radio" name="q25" value="b" style="display: none;">
+                        </div>
+                        
+                        <div class="navigation">
+                            <button onclick="showQuestion(24)">Sebelumnya</button>
+                            <button onclick="hitungNilai()">Selesai</button>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="question-indicator">
+                    <!-- Indikator untuk 25 soal -->
+                    <div class="indicator-dot active" onclick="showQuestion(1)"></div>
+                    <div class="indicator-dot" onclick="showQuestion(2)"></div>
+                    <div class="indicator-dot" onclick="showQuestion(3)"></div>
+                    <div class="indicator-dot" onclick="showQuestion(4)"></div>
+                    <div class="indicator-dot" onclick="showQuestion(5)"></div>
+                    <div class="indicator-dot" onclick="showQuestion(6)"></div>
+                    <div class="indicator-dot" onclick="showQuestion(7)"></div>
+                    <div class="indicator-dot" onclick="showQuestion(8)"></div>
+                    <div class="indicator-dot" onclick="showQuestion(9)"></div>
+                    <div class="indicator-dot" onclick="showQuestion(10)"></div>
+                    <div class="indicator-dot" onclick="showQuestion(11)"></div>
+                    <div class="indicator-dot" onclick="showQuestion(12)"></div>
+                    <div class="indicator-dot" onclick="showQuestion(13)"></div>
+                    <div class="indicator-dot" onclick="showQuestion(14)"></div>
+                    <div class="indicator-dot" onclick="showQuestion(15)"></div>
+                    <div class="indicator-dot" onclick="showQuestion(16)"></极速赛车开奖官网开奖记录>
+                    <div class="indicator-dot" onclick="showQuestion(17)"></div>
+                    <div class="indicator-dot" onclick="showQuestion(18)"></div>
+                    <div class="indicator-dot" onclick="showQuestion(19)"></div>
+                    <div class="indicator-dot" onclick极速赛车开奖官网开奖记录showQuestion(20)"></div>
+                    <div class="indicator-dot" onclick="showQuestion(21)"></div>
+                    <div class="indicator-dot" onclick="showQuestion(22)"></div>
+                    <div class="indicator-dot" onclick="showQuestion(23)"></div>
+                    <div class="indicator-dot" onclick="showQuestion(24)"></div>
+                    <div class="indicator-dot" onclick="showQuestion(25)"></div>
+                </div>
+                
+                <button class="btn btn-primary" onclick="hitungNilai()" style="width: 100%; margin-top: 1rem;">
+                    <i class="fas fa-check-circle"></i> Selesai & Hitung Nilai
+                </button>
+            </div>
+            
+            <div id="hasilUjian" style="display: none;">
+                <div class="result-container">
+                    <h2 class="result-title">Hasil Ujian Anda</h2>
+                    <p>Anda telah menyelesaikan ujian akhir modul Dasar-dasar Informatika</p>
+                    
+                    <div class="score-display">
+                        <div class="score-box">
+                            <div class="score-label">Poin Materi</div>
+                            <div class="score-value" id="poinMateriTotal">0</div>
+                        </div>
+                        <div class="score-box">
+                            <div class="score-label">Jawaban Benar</div>
+                            <div class="score-value" id="skor">0</div>
+                        </div>
+                        <div class="score-box">
+                            <div class="score-label">Poin Ujian</div>
+                            <div class="score-value" id="poinUjian">0</div>
+                        </div>
+                        <div class="score-box">
+                            <div class="score-label">Nilai Akhir</div>
+                            <div class="score-value" id="nilaiAkhir">0</div>
+                        </div>
+                        <div class="score-box">
+                            <div class="score-label">Durasi Ujian</div>
+                            <div class="score-value" id="durasiUjian">00:00</div>
+                        </div>
+                    </div>
+                    
+                    <div class="chart-container">
+                        <div class="chart-box">
+                            <canvas id="hasilChart"></canvas>
+                        </div>
+                    </div>
+                    
+                    <p>Selamat! Anda telah menyelesaikan ujian. Silakan lanjutkan ke bagian sertifikat untuk mengunduh sertifikat penyelesaian.</p>
+                </div>
+            </div>
+        </section>
+        
+        <!-- Sertifikat Section -->
+        <section id="sertifikat" class="section">
+            <h2 class="section-title"><i class="fas fa-award"></i> Sertifikat Penyelesaian</h2>
+            <p>Setelah menyelesaikan semua materi dan ujian, Anda dapat mengunduh sertifikat penyelesaian modul pembelajaran ini.</p>
+            
+            <div class="certificate-form">
+                <input type="text" id="namaSertifikat" placeholder="Masukkan nama untuk sertifikat" value="Nama Siswa">
+                <button onclick="generateCertificate()"><i class="fas fa-download"></i> Unduh Sertifikat</button>
+            </div>
+            
+            <div class="share-options">
+                <button class="share-btn whatsapp-btn" onclick="shareToWhatsApp()">
+                    <i class="fab fa-whatsapp"></i> Bagikan via WhatsApp
+                </button>
+                <button class="share-btn download-btn" onclick="generateCertificate()">
+                    <i class="fas fa-file-pdf"></i> Unduh PDF
+                </button>
+            </div>
+            
+            <div id="statusSertifikat" class="status"></div>
+            
+            <div class="progress-container">
+                <h3>Progress Pembelajaran</h3>
+                <div class="progress-bar">
+                    <div class="progress-fill" id="progress">0%</div>
+                </div>
+                <div class="progress-text">
+                    <span>Status Penyelesaian</span>
+                    <span id="progressPercentage">0%</span>
+                </div>
+            </div>
+            
+            <div class="chart-container">
+                <div class="chart-box">
+                    <canvas id="materiChart"></canvas>
+                </div>
+                <div class="chart-box">
+                    <canvas id="aktivitasChart"></canvas>
+                </div>
+                <div class="chart-box">
+                    <canvas id="durasiChart"></canvas>
+                </div>
+            </div>
+        </section>
+    </div>
+    
+    <!-- Modal Materi Lengkap -->
+    <div id="modalMateri" class="modal">
+        <div class="modal-content">
+            <span class="close-modal" onclick="closeModal()">&times;</span>
+            <h2 class="modal-title" id="modalTitle">Judul Materi</h2>
+            <div class="modal-body" id="modalBody">
+                <!-- Konten materi akan dimuat di sini -->
+            </div>
+        </div>
+    </div>
+    
+    <!-- Floating Action Buttons -->
+    <div class="fab-container">
+        <div class="fab fab-theme" onclick="toggleDarkMode()">
+            <i class="fas fa-moon"></i>
+        </div>
+        <div class="fab" onclick="scrollToTop()">
+            <i class="fas fa-arrow-up"></i>
+        </div>
+        <div class="fab" onclick="showHelp()">
+            <i class="fas fa-question"></i>
+        </div>
+    </div>
+    
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@3.7.1/dist/chart.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <script>
+        // Deklarasi variabel global
+        const { jsPDF } = window.jspdf;
+        let currentQuestion = 1;
+        let totalQuestions = 25;
+        let examStarted = false;
+        let examTime = 0;
+        let examTimer;
+        let darkMode = false;
+        let readingTimers = {};
+        let readingDurations = {
+            materi1: 0,
+            materi2: 0,
+            materi3: 0,
+            materi4: 0
+        };
+        
+        // Poin dari aktivitas membaca per materi
+        let poinMateri = {
+            materi1: 0,
+            materi2: 0,
+            materi3: 0,
+            materi4: 0
+        };
+        
+        // Inisialisasi saat halaman dimuat
+        document.addEventListener('DOMContentLoaded', function() {
+            // Inisialisasi chart progress
+            initCharts();
+            
+            // Mulai timer untuk materi yang sedang dibaca
+            startReadingTimers();
+            
+            // Set event listener untuk bookmark
+            setupBookmarks();
+            
+            // Set event listener untuk notifikasi
+            setupNotification();
+            
+            // Periksa preferensi dark mode
+            checkDarkModePreference();
+            
+            // Tampilkan soal pertama
+            showQuestion(1);
+            
+            // Set nama siswa dari input absensi ke input sertifikat
+            document.getElementById('namaSertifikat').value = document.getElementById('namaSiswa').value;
+            
+            // Update progress awal
+            updateProgress();
+        });
+        
+        // Fungsi untuk navigasi ke section
+        function navigateToSection(sectionId) {
+            scrollToSection(sectionId);
+            toggleMenu(); // Tutup menu mobile setelah memilih
+        }
+        
+        // Fungsi untuk toggle menu mobile
+        function toggleMenu() {
+            const menu = document.getElementById('mainMenu');
+            menu.classList.toggle('active');
+        }
+        
+        // Fungsi untuk scroll ke section tertentu
+        function scrollToSection(sectionId) {
+            const section = document.getElementById(sectionId);
+            section.scrollIntoView({ behavior: 'smooth' });
+            
+            // Update menu aktif
+            const menuItems = document.querySelectorAll('.menu-item');
+            menuItems.forEach(item => item.classList.remove('active'));
+            
+            // Temukan menu item yang sesuai dengan sectionId
+            menuItems.forEach(item => {
+                if (item.querySelector('span').textContent.toLowerCase() === sectionId) {
+                    item.classList.add('active');
+                }
+            });
+        }
+        
+        // Fungsi untuk scroll ke atas
+        function scrollToTop() {
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+        
+        // Fungsi untuk toggle dark mode
+        function toggleDarkMode() {
+            darkMode = !darkMode;
+            document.body.classList.toggle('dark-mode', darkMode);
+            
+            // Simpan preferensi di localStorage
+            localStorage.setItem('darkMode', darkMode);
+            
+            // Update icon tema
+            const themeIcon = document.querySelector('.fab-theme i');
+            if (darkMode) {
+                themeIcon.classList.remove('fa-moon');
+                themeIcon.classList.add('fa-sun');
+            } else {
+                themeIcon.classList.remove('fa-sun');
+                themeIcon.classList.add('fa-moon');
+            }
+            
+            // Tampilkan notifikasi
+            showNotification(darkMode ? 'Mode Gelap Diaktifkan' : 'Mode Terang Diaktifkan', darkMode ? 'success' : 'info');
+        }
+        
+        // Cek preferensi dark mode dari localStorage
+        function checkDarkModePreference() {
+            const savedMode = localStorage.getItem('darkMode');
+            if (savedMode === 'true') {
+                darkMode = true;
+                document.body.classList.add('dark-mode');
+                
+                // Update icon
+                const themeIcon = document.querySelector('.fab-theme i');
+                themeIcon.classList.replace('fa-moon', 'fa-sun');
+            }
+        }
+        
+        // Fungsi untuk print halaman
+        function printPage() {
+            window.print();
+        }
+        
+        // Fungsi untuk menampilkan bantuan
+        function showHelp() {
+            alert('Bantuan:\n\n1. Gunakan menu untuk navigasi antar bagian\n2. Centang checkbox setelah membaca materi\n3. Masukkan token untuk mengerjakan soal\n4. Gunakan tombol floating untuk akses cepat\n5. Aktifkan mode gelap untuk kenyamanan mata');
+        }
+        
+        // Fungsi untuk mengirim absensi
+        function kirimAbsensi() {
+            const nama = document.getElementById('namaSiswa').value;
+            const email = document.getElementById('emailSiswa').value;
+            const status = document.getElementById('absenStatus').value;
+            
+            if (!nama || !email || !status) {
+                document.getElementById('statusAbsensi').className = 'status error';
+                document.getElementById('statusAbsensi').innerHTML = '<i class="fas fa-exclamation-circle"></i> Harap lengkapi semua field!';
+                return;
+            }
+            
+            // Simulasi pengiriman data
+            setTimeout(() => {
+                document.getElementById('statusAbsensi').className = 'status success';
+                document.getElementById('statusAbsensi').innerHTML = '<i class="fas fa-check-circle"></i> Absensi berhasil dikirim!';
+                
+                // Update nama di sertifikat
+                document.getElementById('namaSertifikat').value = nama;
+                
+                // Update progress
+                updateProgress();
+                
+                // Tampilkan notifikasi
+                showNotification('Absensi berhasil dikirim', 'success');
+            }, 1000);
+        }
+        
+        // Fungsi untuk memulai timer membaca materi
+        function startReadingTimers() {
+            const materiContents = document.querySelectorAll('.materi-content');
+            
+            materiContents.forEach((content, index) => {
+                const materiId = `materi${index + 1}`;
+                const durasiElement = document.getElementById(`durasi${materiId.charAt(0).toUpperCase() + materiId.slice(1)}`);
+                const poinElement = document.getElementById(`poin${materiId.charAt(0).toUpperCase() + materiId.slice(1)}`);
+                
+                // Mulai timer ketika konten terlihat di viewport
+                const observer = new IntersectionObserver((entries) => {
+                    entries.forEach(entry => {
+                        if (entry.isIntersecting) {
+                            // Mulai timer
+                            readingTimers[materiId] = setInterval(() => {
+                                readingDurations[materiId]++;
+                                
+                                // Hitung poin berdasarkan durasi (1 poin per menit, maks 10 poin)
+                                const menit = Math.floor(readingDurations[materiId] / 60);
+                                poinMateri[materiId] = Math.min(10, menit);
+                                poinElement.textContent = poinMateri[materiId];
+                                
+                                const minutes = Math.floor(readingDurations[materiId] / 60);
+                                const seconds = readingDurations[materiId] % 60;
+                                durasiElement.textContent = `${minutes} menit ${seconds} detik`;
+                                
+                                // Update chart aktivitas
+                                updateProgressChart(
+                                    document.querySelectorAll('input[type="checkbox"]:checked').length,
+                                    4 - document.querySelectorAll('input[type="checkbox"]:checked').length,
+                                    document.getElementById('hasilUjian').style.display !== 'none'
+                                );
+                            }, 1000);
+                        } else {
+                            // Hentikan timer
+                            if (readingTimers[materiId]) {
+                                clearInterval(readingTimers[materiId]);
+                                delete readingTimers[materiId];
+                            }
+                        }
+                    });
+                }, { threshold: 0.5 });
+                
+                observer.observe(content);
+            });
+        }
+        
+        // Fungsi untuk membuka modal materi lengkap
+        function openModal(materiNumber) {
+            const modal = document.getElementById('modalMateri');
+            const modalTitle = document.getElementById('modalTitle');
+            const modalBody = document.getElementById('modalBody');
+            
+            // Set judul modal
+            const materiTitle = document.querySelector(`#materi${materiNumber} h2`).textContent.split(':')[1].trim();
+            modalTitle.textContent = `Materi ${materiNumber}: ${materiTitle}`;
+            
+            // Set konten modal berdasarkan materi
+            let modalContent = '';
+            switch(materiNumber) {
+                case 1:
+                    modalContent = `
+                        <h3>Sejarah Informatika</h3>
+                        <p>Informatika sebagai disiplin ilmu mulai berkembang pesat sejak pertengahan abad ke-20 dengan munculnya komputer digital. Perkembangan informatika dapat dibagi menjadi beberapa era:</p>
+                        <ol>
+                            <li><strong>Era Mekanik (1642-1940)</strong>: Dimulai dengan penemuan kalkulator mekanik oleh Blaise Pascal</li>
+                            <li><strong>Era Elektromekanik (1940-1946)</strong>: Penggunaan relay elektromagnetik dan tabung vakum</li>
+                            <li><strong>Era Komputer Generasi Pertama (1946-1959)</strong>: Komputer dengan tabung vakum seperti ENIAC</li>
+                            <li><strong>Era Komputer Generasi Kedua (1959-1965)</strong>: Penggunaan transistor</li>
+                            <li><strong>Era Komputer Generasi Ketiga (1965-1971)</strong>: Penggunaan integrated circuit (IC)</li>
+                            <li><strong>Era Komputer Generasi Keempat (1971-sekarang)</strong>: Penggunaan microprocessor</li>
+                            <li><strong>Era Modern</strong>: Komputer pribadi, internet, dan kecerdasan buatan</li>
+                        </ol>
+                        
+                        <h3>Konsep Dasar Pemrograman</h3>
+                        <p>Pemrograman adalah proses menulis, menguji, dan memperbaiki kode program. Beberapa konsep dasar pemrograman meliputi:</p>
+                        <ul>
+                            <li><strong>Algoritma</strong>: Langkah-langkah logis untuk menyelesaikan masalah</li>
+                            <li><strong>Struktur Data</strong>: Cara mengorganisir dan menyimpan data</li>
+                            <li><strong>Variabel</strong>: Tempat penyimpanan data</li>
+                            <li><strong>Kontrol Alur</strong>: Pengaturan urutan eksekusi perintah</li>
+                            <li><strong>Fungsi</strong>: Blok kode yang dapat digunakan berulang kali</li>
+                        </ul>
+                        
+                        <h3>Aplikasi Teknologi Informasi</h3>
+                        <p>Teknologi informasi telah mengubah berbagai aspek kehidupan modern:</p>
+                        <ul>
+                            <li><strong>Bisnis</strong>: Sistem ERP, e-commerce, analitik data</li>
+                            <li><strong>Pendidikan</strong>: E-learning, perpustakaan digital</li>
+                            <li><strong>Kesehatan</strong>: Rekam medis elektronik, telemedicine</li>
+                            <li><strong>Pemerintahan</strong>: E-government, layanan publik online</li>
+                            <li><strong>Hiburan</strong>: Streaming, game online, media sosial</li>
+                        </ul>
+                    `;
+                    break;
+                case 2:
+                    modalContent = `
+                        <h3>Detail Komponen Perangkat Keras</h3>
+                        <p>Perangkat keras komputer terdiri dari berbagai komponen yang bekerja bersama untuk memproses informasi. Pemahaman mendalam tentang komponen-komponen ini penting untuk merakit, memelihara, dan memecahkan masalah sistem komputer.</p>
+                        
+                        <h4>CPU (Central Processing Unit)</h4>
+                        <p>CPU adalah otak komputer yang bertanggung jawab untuk mengeksekusi instruksi program. CPU terdiri dari:</p>
+                        <ul>
+                            <li><strong>ALU (Arithmetic Logic Unit)</strong>: Melakukan operasi aritmatika dan logika</li>
+                            <li><strong>CU (Control Unit)</strong>: Mengontrol aliran data dalam CPU</li>
+                            <li><strong>Register</strong>: Penyimpanan sementara yang sangat cepat</li>
+                            <li><strong>Cache</strong>: Memori berkecepatan tinggi untuk menyimpan data yang sering diakses</li>
+                        </ul>
+                        
+                        <h4>Memori</h4>
+                        <p>Memori komputer terdiri dari beberapa jenis:</p>
+                        <ul>
+                            <li><strong>RAM (Random Access Memory)</strong>: Memori volatil untuk menyimpan data sementara saat komputer menyala</li>
+                            <li><strong>ROM (Read Only Memory)</strong>: Memori non-volatil yang berisi instruksi booting</li>
+                            <li><strong>Cache Memory</strong>: Memori berkecepatan tinggi yang terintegrasi dengan CPU</li>
+                        </ul>
+                        
+                        <h4>Penyimpanan</h4>
+                        <p>Perangkat penyimpanan data permanen:</p>
+                        <ul>
+                            <li><strong>HDD (Hard Disk Drive)</strong>: Menggunakan piringan magnetik untuk menyimpan data</li>
+                            <li><strong>SSD (Solid State Drive)</strong>: Menggunakan memori flash, lebih cepat dan tahan guncangan</li>
+                            <li><strong>Optical Drive</strong>: CD/DVD/Blu-ray untuk membaca dan menulis data pada disk optik</li>
+                            <li><strong>Flash Drive</strong>: Penyimpanan portabel menggunakan teknologi flash memory</li>
+                        </ul>
+                    `;
+                    break;
+                case 3:
+                    modalContent = `
+                        <h3>Jaringan Komputer: Konsep Dasar</h3>
+                        <p>Jaringan komputer memungkinkan pertukaran data dan sumber daya antara perangkat. Jaringan modern telah berkembang dari sistem terisolasi menjadi infrastruktur global yang menghubungkan miliaran perangkat.</p>
+                        
+                        <h4>Topologi Jaringan</h4>
+                        <p>Berbagai bentuk fisik jaringan komputer:</p>
+                        <ul>
+                            <li><strong>Bus</strong>: Semua perangkat terhubung ke satu kabel utama</li>
+                            <li><strong>Star</strong>: Semua perangkat terhubung ke perangkat pusat (switch/hub)</li>
+                            <li><strong>Ring</strong>: Perangkat terhubung membentuk lingkaran</li>
+                            <li><strong>Mesh</strong>: Setiap perangkat terhubung langsung ke banyak perangkat lain</li>
+                            <li><strong>Tree</strong>: Kombinasi topologi star dan bus</li>
+                        </ul>
+                        
+                        <h4>Protokol Jaringan</h4>
+                        <p>Protokol adalah aturan yang mengatur komunikasi antar perangkat:</p>
+                        <ul>
+                            <li><strong>TCP/IP</strong>: Protokol dasar internet</li>
+                            <li><strong>HTTP/HTTPS</strong>: Untuk transfer halaman web</li>
+                            <li><strong>FTP</strong>: Untuk transfer file</li>
+                            <li><strong>SMTP/POP3/IMAP</strong>: Untuk email</li>
+                            <li><strong>DNS</strong>: Menerjemahkan nama domain ke alamat IP</li>
+                        </ul>
+                        
+                        <h4>Keamanan Jaringan</h4>
+                        <p>Melindungi jaringan dari ancaman:</p>
+                        <ul>
+                            <li><strong>Firewall</strong>: Membatasi akses jaringan</li>
+                            <li><strong>Enkripsi</strong>: Mengamankan data yang ditransmisikan</li>
+                            <li><strong>VPN</strong>: Membuat koneksi aman melalui jaringan publik</li>
+                            <li><strong>IDS/IPS</strong>: Mendeteksi dan mencegah serangan jaringan</li>
+                        </ul>
+                    `;
+                    break;
+                case 4:
+                    modalContent = `
+                        <h3>Etika Digital: Prinsip dan Tantangan</h3>
+                        <p>Etika digital mengatur perilaku yang tepat dalam dunia maya. Dengan meningkatnya ketergantungan pada teknologi digital, pemahaman tentang etika menjadi semakin penting untuk menciptakan lingkungan digital yang aman dan inklusif.</p>
+                        
+                        <h4>Prinsip Etika Digital</h4>
+                        <ul>
+                            <li><strong>Privasi</strong>: Menghormati hak privasi individu</li>
+                            <li><strong>Kejujuran</strong>: Tidak menyebarkan informasi palsu atau menyesatkan</li>
+                            <li><strong>Hak Kekayaan Intelektual</strong>: Menghormati karya orang lain</li>
+                            <li><strong>Tanggung Jawab</strong>: Bertanggung jawab atas tindakan di dunia digital</li>
+                            <li><strong>Keadilan</strong>: Memberikan akses dan kesempatan yang setara</li>
+                        </ul>
+                        
+                        <h4>Tantangan Etika Digital</h4>
+                        <ul>
+                            <li><strong>Penyebaran Hoax</strong>: Informasi palsu yang disebarkan secara masif</li>
+                            <li><strong>Cyberbullying</strong>: Pelecehan dan intimidasi melalui media digital</li>
+                            <li><strong>Pelanggaran Privasi</strong>: Pengumpulan dan penggunaan data pribadi tanpa izin</li>
+                            <li><strong>Pelanggaran Hak Cipta</strong>: Pembajakan konten digital</li>
+                            <li><strong>Kecanduan Digital</strong>: Ketergantungan berlebihan pada perangkat digital</li>
+                        </ul>
+                        
+                        <h4>Praktik Keamanan Digital</h4>
+                        <ul>
+                            <li>Gunakan password yang kuat dan berbeda untuk setiap akun</li>
+                            <li>Aktifkan autentikasi dua faktor</li>
+                            <li>Perbarui perangkat lunak secara berkala</li>
+                            <li>Hati-hati dengan email dan link mencurigakan</li>
+                            <li>Backup data penting secara rutin</li>
+                            <li>Gunakan antivirus dan firewall</li>
+                        </ul>
+                    `;
+                    break;
+            }
+            
+            modalBody.innerHTML = modalContent;
+            modal.style.display = 'block';
+            document.body.style.overflow = 'hidden';
+        }
+        
+        // Fungsi untuk menutup modal
+        function closeModal() {
+            const modal = document.getElementById('modalMateri');
+            modal.style.display = 'none';
+            document.body.style.overflow = 'auto';
+        }
+        
+        // Fungsi untuk mengirim refleksi materi
+        function kirimRefleksi(materiNumber) {
+            const refleksi = document.getElementById(`refleksi${materiNumber}`).value;
+            
+            if (!refleksi) {
+                document.getElementById(`statusRefleksi${materiNumber}`).className = 'status error';
+                document.getElementById(`statusRefleksi${materiNumber}`).innerHTML = '<i class="fas fa-exclamation-circle"></i> Harap tulis refleksi pembelajaran!';
+                return;
+            }
+            
+            // Simulasi pengiriman data
+            setTimeout(() => {
+                document.getElementById(`statusRefleksi${materiNumber}`).className = 'status success';
+                document.getElementById(`statusRefleksi${materiNumber}`).innerHTML = '<i class="fas fa-check-circle"></i> Refleksi berhasil dikirim!';
+                
+                // Update progress
+                updateProgress();
+                
+                // Tampilkan notifikasi
+                showNotification('Refleksi materi berhasil dikirim', 'success');
+            }, 1000);
+        }
+        
+        // Fungsi untuk verifikasi token ujian
+        function verifikasiToken() {
+            const token = document.getElementById('tokenUjian').value;
+            
+            if (!token) {
+                document.getElementById('tokenStatus').className = 'status error';
+                document.getElementById('tokenStatus').innerHTML = '<i class="fas fa-exclamation-circle"></i> Harap masukkan token ujian!';
+                return;
+            }
+            
+            // Simulasi verifikasi token
+            setTimeout(() => {
+                if (token === 'INF10UJIAN2025') {
+                    document.getElementById('tokenStatus').className = 'status success';
+                    document.getElementById('tokenStatus').innerHTML = '<i class="fas fa-check-circle"></i> Token valid! Silakan mengerjakan soal.';
+                    
+                    // Tampilkan soal ujian
+                    document.getElementById('soalUjian').style.display = 'block';
+                    
+                    // Mulai timer ujian
+                    startExamTimer();
+                    
+                    // Scroll ke soal
+                    document.getElementById('soalUjian').scrollIntoView({ behavior: 'smooth' });
+                    
+                    // Tampilkan notifikasi
+                    showNotification('Token valid, ujian dimulai', 'success');
+                } else {
+                    document.getElementById('tokenStatus').className = 'status error';
+                    document.getElementById('tokenStatus').innerHTML = '<i class="fas fa-times-circle"></i> Token tidak valid!';
+                    
+                    // Tampilkan notifikasi
+                    showNotification('Token tidak valid', 'error');
+                }
+            }, 1000);
+        }
+        
+        // Fungsi untuk memulai timer ujian
+        function startExamTimer() {
+            if (examStarted) return;
+            
+            examStarted = true;
+            examTimer = setInterval(() => {
+                examTime++;
+                const minutes = Math.floor(examTime / 60);
+                const seconds = exam极速赛车开奖官网开奖记录 % 60;
+                document.getElementById('examTimer').textContent = 
+                    `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+            }, 1000);
+        }
+        
+        // Fungsi untuk menampilkan soal tertentu
+        function showQuestion(questionNumber) {
+            // Sembunyikan semua soal
+            const questionContainers = document.querySelectorAll('.question-container');
+            questionContainers.forEach(container => {
+                container.classList.remove('active');
+            });
+            
+            // Tampilkan soal yang dipilih
+            document.getElementById(`soal${questionNumber}`).classList.add('active');
+            currentQuestion = questionNumber;
+            
+            // Update indicator dot
+            const dots = document.querySelectorAll('.indicator-dot');
+            dots.forEach(dot => dot.classList.remove('active'));
+            dots[questionNumber - 1].classList.add('active');
+            
+            // Update nomor soal
+            document.getElementById('currentQuestion').textContent = questionNumber;
+            
+            // Scroll ke atas soal
+            document.querySelector('.questions-container').scrollTop = 0;
+        }
+        
+        // Fungsi untuk memilih jawaban
+        function selectAnswer(element, questionId, answerValue) {
+            // Hapus selected class dari semua option
+            const options = element.parentElement.querySelectorAll('.option');
+            options.forEach(opt => opt.classList.remove('selected'));
+            
+            // Tambahkan selected class ke option yang dipilih
+            element.classList.add('selected');
+            
+            // Set radio button yang sesuai
+            document.querySelector(`input[name="${questionId}"][value="${answerValue}"]`).checked = true;
+        }
+        
+        // Fungsi untuk menghitung nilai
+        function hitungNilai() {
+            // Hentikan timer ujian
+            clearInterval(examTimer);
+            
+            // Format durasi ujian
+            const minutes = Math.floor(examTime / 60);
+            const seconds = examTime % 60;
+            const durasiFormatted = `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+            document.getElementById('durasiUjian').textContent = durasiFormatted;
+            
+            // Jawaban benar (simulasi)
+            const correctAnswers = {
+                q1: 'a', q2: 'a', q3: 'a', q4: 'c', q5: 'c',
+                q6: 'b', q7: 'a', q8: 'c', q9: 'c', q10: 'c',
+                q11: 'b', q12: 'b', q13: 'c', q14: 'c', q15: 'c',
+                q16: 'a', q17: 'a', q18: 'b', q19: 'a', q20: 'd',
+                q21: 'a', q22: 'a', q23: 'a', q24: 'a', q25: 'b'
+            };
+            
+            let score = 0;
+            
+            // Hitung jawaban benar
+            for (let i = 1; i <= totalQuestions; i++) {
+                const selectedAnswer = document.querySelector(`input[name="q${i}"]:checked`);
+                if (selectedAnswer && selectedAnswer.value === correctAnswers[`q${i}`]) {
+                    score++;
+                }
+            }
+            
+            // Hitung poin dari aktivitas membaca
+            const poinAktivitas = Object.values(poinMateri).reduce((a, b) => a + b, 0);
+            
+            // Hitung poin ujian (60 poin maksimal)
+            const poinUjian = (score / totalQuestions) * 60;
+            
+            // Total nilai
+            const nilai = poinAktivitas + poinUjian;
+            
+            // Tampilkan hasil
+            document.getElementById('soalUjian').style.display = 'none';
+            document.getElementById('hasilUjian').style.display = 'block';
+            
+            document.getElementById('skor').textContent = score;
+            document.getElementById('poinMateriTotal').textContent = poinAktivitas;
+            document.getElementById('poinUjian').textContent = poinUjian.toFixed(1);
+            document.getElementById('nilaiAkhir').textContent = nilai.toFixed(1);
+            
+            // Animasikan skor
+            animateValue('skor', 0, score, 1000);
+            animateValue('poinMateriTotal', 0, poinAktivitas, 1000);
+            animateValue('poinUjian', 0, poinUjian, 1000);
+            animateValue('nilaiAkhir', 0, nilai, 1000);
+            
+            // Update chart hasil
+            updateResultChart(score, totalQuestions - score);
+            
+            // Update progress
+            updateProgress();
+            
+            // Scroll ke hasil
+            document.getElementById('hasilUjian').scrollIntoView({ behavior: 'smooth' });
+            
+            // Tampilkan notifikasi
+            showNotification(`Ujian selesai! Nilai Anda: ${nilai.toFixed(1)}`, 'success');
+        }
+        
+        // Fungsi untuk animasi angka
+        function animateValue(id, start, end, duration) {
+            const obj = document.getElementById(id);
+            let startTimestamp = null;
+            const step = (timestamp) => {
+                if (!startTimestamp) startTimestamp = timestamp;
+                const progress = Math.min((timestamp - startTimestamp) / duration, 1);
+                const value = progress * (end - start) + start;
+                
+                // Format nilai desimal untuk poinUjian dan nilaiAkhir
+                if (id === 'poinUjian' || id === 'nilaiAkhir') {
+                    obj.innerHTML = value.toFixed(1);
+                } else {
+                    obj.innerHTML = Math.floor(value);
+                }
+                
+                if (progress < 1) {
+                    window.requestAnimationFrame(step);
+                }
+            };
+            window.requestAnimationFrame(step);
+        }
+        
+        // Fungsi untuk mengupdate progress pembelajaran
+        function updateProgress() {
+            // Hitung progress berdasarkan checklist materi dan ujian
+            const materiChecked = [
+                document.getElementById('baca1').checked,
+                document.getElementById('baca2').checked,
+                document.getElementById('baca3').checked,
+                document.getElementById('baca4').checked
+            ].filter(Boolean).length;
+            
+            const ujianSelesai = document.getElementById('hasilUjian').style.display !== 'none';
+            
+            // Hitung persentase progress (50% materi + 50% ujian)
+            const materiProgress = (materiChecked / 4) * 50;
+            const ujianProgress = ujianSelesai ? 50 : 0;
+            const totalProgress = materiProgress + ujianProgress;
+            
+            // Update progress bar
+            document.getElementById('progress').style.width = `${totalProgress}%`;
+            document.getElementById('progress').textContent = `${Math.round(totalProgress)}%`;
+            document.getElementById('progressPercentage').textContent = `${Math.round(totalProgress)}%`;
+            
+            // Update chart progress
+            updateProgressChart(materiChecked, 4 - materiChecked, ujianSelesai);
+        }
+        
+        // Fungsi untuk inisialisasi chart
+        function initCharts() {
+            // Chart progress materi
+            const materiCtx = document.getElementById('materiChart').getContext('2d');
+            window.materiChart = new Chart(materiCtx, {
+                type: 'doughnut',
+                data: {
+                    labels: ['Selesai', 'Belum'],
+                    datasets: [{
+                        data: [0, 4],
+                        backgroundColor: [
+                            'rgba(52, 152, 219, 0.7)',
+                            'rgba(231, 76, 60, 0.7)'
+                        ],
+                        borderWidth: 1
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    plugins: {
+                        title: {
+                            display: true,
+                            text: 'Progress Materi',
+                            font: {
+                                size: 16,
+                                weight: 'bold'
+                            },
+                            color: darkMode ? '#f5f5f5' : '#333'
+                        },
+                        legend: {
+                            position: 'bottom',
+                            labels: {
+                                color: darkMode ? '#f5f5f5' : '#333'
+                            }
+                        }
+                    }
+                }
+            });
+            
+            // Chart aktivitas pembelajaran
+            const aktivitasCtx = document.getElementById('aktivitasChart').getContext('2d');
+            window.aktivitasChart = new Chart(aktivitasCtx, {
+                type: 'bar',
+                data: {
+                    labels: ['Materi 1', 'Materi 2', 'Materi 3', 'Materi 4'],
+                    datasets: [{
+                        label: 'Waktu Baca (detik)',
+                        data: [0, 0, 0, 0],
+                        backgroundColor: 'rgba(52, 152, 219, 0.7)',
+                        borderWidth: 1
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    plugins: {
+                        title: {
+                            display: true,
+                            text: 'Durasi Pembelajaran',
+                            font: {
+                                size: 16,
+                                weight: 'bold'
+                            },
+                            color: darkMode ? '#f5f5f5' : '#333'
+                        },
+                        legend: {
+                            display: false
+                        }
+                    },
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            ticks: {
+                                color: darkMode ? '#f5f5f5' : '#333'
+                            },
+                            grid: {
+                                color: darkMode ? 'rgba(255, 255, 255, 0.1)' : 'rgba(0, 0, 0, 0.1)'
+                            }
+                        },
+                        x: {
+                            ticks: {
+                                color: darkMode ? '#f5f5f5' : '#333'
+                            },
+                            grid: {
+                                color: darkMode ? 'rgba(255, 255, 255, 0.1)' : 'rgba(0, 0, 0, 0.1)'
+                            }
+                        }
+                    }
+                }
+            });
+            
+            // Chart durasi pembelajaran
+            const durasiCtx = document.getElementById('durasiChart').getContext('2d');
+            window.durasiChart = new Chart(durasiCtx, {
+                type: 'line',
+                data: {
+                    labels: ['Minggu 1', 'Minggu 2', 'Minggu 3', 'Minggu 4'],
+                    datasets: [{
+                        label: 'Waktu Belajar (menit)',
+                        data: [120, 90, 150, 180],
+                        backgroundColor: 'rgba(52, 152, 219, 0.2)',
+                        borderColor: 'rgba(52, 152, 219, 1)',
+                        borderWidth: 2,
+                        tension: 0.4,
+                        fill: true
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    plugins: {
+                        title: {
+                            display: true,
+                            text: 'Trend Pembelajaran',
+                            font: {
+                                size: 16,
+                                weight: 'bold'
+                            },
+                            color: darkMode ? '#f5f5f5' : '#333'
+                        },
+                        legend: {
+                            labels: {
+                                color: darkMode ? '#f5f5f5' : '#333'
+                            }
+                        }
+                    },
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            ticks: {
+                                color: darkMode ? '#f5f5f5' : '#333'
+                            },
+                            grid: {
+                                color: darkMode ? 'rgba(255, 255, 255, 0.1)' : 'rgba(0, 0, 0, 0.1)'
+                            }
+                        },
+                        x: {
+                            ticks: {
+                                color: darkMode ? '#f5f5f5' : '#333'
+                            },
+                            grid: {
+                                color: darkMode ? 'rgba(255, 255, 255, 0.1)' : 'rgba(0, 0, 0, 0.1)'
+                            }
+                        }
+                    }
+                }
+            });
+            
+            // Chart hasil ujian
+            const hasilCtx = document.getElementById('hasilChart').getContext('2d');
+            window.hasilChart = new Chart(hasilCtx, {
+                type: 'pie',
+                data: {
+                    labels: ['Benar', 'Salah'],
+                    datasets: [{
+                        data: [0, 25],
+                        backgroundColor: [
+                            'rgba(52, 152, 219, 0.7)',
+                            'rgba(231, 76, 60, 0.7)'
+                        ],
+                        borderWidth: 1
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    plugins: {
+                        title: {
+                            display: true,
+                            text: 'Hasil Ujian',
+                            font: {
+                                size: 16,
+                                weight: 'bold'
+                            },
+                            color: darkMode ? '#f5f5f5' : '#333'
+                        },
+                        legend: {
+                            position: 'bottom',
+                            labels: {
+                                color: darkMode ? '#f5f5f5' : '#333'
+                            }
+                        }
+                    }
+                }
+            });
+        }
+        
+        // Fungsi untuk mengupdate chart progress
+        function updateProgressChart(selesai, belum, ujianSelesai) {
+            window.materiChart.data.datasets[0].data = [selesai, belum];
+            window.materiChart.update();
+            
+            // Update aktivitas chart dengan durasi baca
+            window.aktivitasChart.data.datasets[0].data = [
+                readingDurations.materi1,
+                readingDurations.materi2,
+                readingDurations.materi3,
+                readingDurations.materi4
+            ];
+            window.aktivitasChart.update();
+            
+            // Update durasi chart (simulasi)
+            if (ujianSelesai) {
+                window.durasiChart.data.datasets[0].data[3] = 240; // Tambahan waktu setelah ujian
+                window.durasiChart.update();
+            }
+        }
+        
+        // Fungsi untuk mengupdate chart hasil ujian
+        function updateResultChart(benar, salah) {
+            window.hasilChart.data.datasets[0].data = [benar, salah];
+            window.hasilChart.update();
+        }
+        
+        // Fungsi untuk generate sertifikat
+        function generateCertificate() {
+            // Gunakan nama dari input nama sertifikat atau input nama siswa
+            let nama = document.getElementById('namaSertifikat').value || 
+                      document.getElementById('namaSiswa').value || 
+                      'Peserta';
+            
+            // Gunakan nilai dari hasil ujian
+            const nilai = document.getElementById('nilaiAkhir')?.textContent || '100';
+            
+            // Hitung poin dari aktivitas membaca
+            const poinAktivitas = Object.values(poinMateri).reduce((a, b) => a + b, 0);
+            
+            // Tanggal hari ini
+            const today = new Date();
+            const options = { year: 'numeric', month: 'long', day: 'numeric' };
+            const tanggal = today.toLocaleDateString('id-ID', options);
+            
+            // Buat PDF
+            const doc = new jsPDF({
+                orientation: 'landscape',
+                unit: 'mm'
+            });
+            
+            // Background gradient
+            doc.setGradient(0, 0, doc.internal.pageSize.width, doc.internal.pageSize.height, 
+                [52, 152, 219], [44, 62, 80], 'linear', null, [0, 0, 1, 0]);
+            
+            // Border dekoratif
+            doc.setDrawColor(255, 255, 255, 30);
+            doc.setLineWidth(15);
+            doc.roundedRect(7.5, 7.5, 282, 195, 5, 5, 'S');
+            
+            // Logo (simulasi)
+            const logo = 'data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCA1MTIgNTEyIj48cGF0aCBmaWxsPSIjZmZmIiBkPSJNMjU2IDhDMTE5IDggOCAxMTkgOCAyNTZzMTExIDI0OCAyNDggMjQ4IDI0OC0xMTEgMjQ4LTI0OFMzOTMgOCAyNTYgOHptMCA0NDhjLTExMC41IDAtMjAwLTg5LjUtMjAwLTIwMFMxNDUuNSA1NiAyNTYgNTZzMjAwIDg5LjUgMjAwIDIwMC04OS41IDIwMC0yMDAgMjAwem02MS44LTEwNC40bC04NC45LTYxLjdjLTMuMS0yLjMtNC45LTUuOS00LjktOS43TDExNiAyMjRjMCA2LjYgNS40IDEyIDEyIDEyaDMyYzYuNiAwIDEyLTUuNCAxMi0xMnYtMzYuOWw2Ni8 48.6YzUuNCAzLjkgNi41IDExLjQgMi42IDE2LjhMMzM3LjcgMzA0Yy0zLjkgNS4zLTExLjQgNi41LTE2LjcgMi42eiIvPjwvc3ZnPg==';
+            doc.addImage(logo, 'SVG', 30, 30, 40, 40);
+            
+            // Nama sekolah
+            doc.setFontSize(18);
+            doc.setTextColor(255, 255, 255);
+            doc.setFont('helvetica', 'bold');
+            doc.text('SMK FAJAR', 70, 50);
+            
+            // Judul sertifikat
+            doc.setFontSize(36);
+            doc.setTextColor(255, 255, 255);
+            doc.setFont('helvetica', 'bold');
+            doc.text('SERTIFIKAT PENYELESAIAN', 148.5, 70, { align: 'center' });
+            
+            // Subjudul
+            doc.setFontSize(16);
+            doc.setTextColor(255, 255, 255, 0.8);
+            doc.setFont('helvetica', 'normal');
+            doc.text('Diberikan kepada:', 148.5, 85, { align: 'center' });
+            
+            // Nama penerima
+            doc.setFontSize(28);
+            doc.setText极速赛车开奖官网开奖记录(255, 255, 255);
+            doc.setFont('helvetica', 'bold');
+            doc.text(nama.toUpperCase(), 148.5, 105, { align: 'center', maxWidth: 250 });
+            
+            // Deskripsi
+            doc.setFontSize(14);
+            doc.setTextColor(255, 255, 255, 0.9);
+            doc.setFont('helvetica', 'normal');
+            doc.text('Telah menyelesaikan modul pembelajaran "Dasar-dasar Informatika"', 148.5, 125, { align: 'center' });
+            doc.text(`Poin Aktivitas Belajar: ${poinAktivitas} | Nilai Akhir: ${nilai}`, 148.5, 135, { align: 'center' });
+            
+            // Detail pembelajaran
+            doc.setFontSize(12);
+            doc.text(`Kelas: 10 PM 2 | Guru Pengampu: SONI HAJI, S.Kom`, 148.5, 150, { align: 'center' });
+            
+            // Tanggal
+            doc.setFontSize(14);
+            doc.text(`Tanggal: ${tanggal}`, 148.5, 170, { align: 'center' });
+            
+            // Cap dan tanda tangan
+            doc.setFontSize(12);
+            doc.text('Kepala Sekolah,', 100, 190);
+            doc.text('Guru Mata Pelajaran,', 197, 190);
+            
+            // Garis tanda tangan
+            doc.setDrawColor(255, 255, 255);
+            doc.setLineWidth(0.5);
+            doc.line(80, 200, 120, 200);
+            doc.line(177, 200, 217, 200);
+            
+            // Nomor sertifikat
+            doc.setFontSize(10);
+            doc.setTextColor(255, 255, 255, 0.6);
+            doc.text(`Nomor: CERT-${today.getFullYear()}${(today.getMonth()+1).toString().padStart(2, '0')}${Math.floor(Math.random() * 1000).toString().padStart(3, '0')}`, 260, 280);
+            
+            // Simpan PDF
+            doc.save(`Sertifikat_${nama.replace(/ /g, '_')}.pdf`);
+            
+            // Tampilkan notifikasi
+            const statusElement = document.getElementById('statusSertifikat');
+            if (statusElement) {
+                statusElement.className = 'status success';
+                statusElement.innerHTML = '<i class="fas fa-check-circle"></i> Sertifikat berhasil diunduh!';
+            }
+            
+            showNotification('Sertifikat berhasil diunduh', 'success');
+        }
+        
+        // Fungsi untuk berbagi hasil ke WhatsApp
+        function shareToWhatsApp() {
+            // Gunakan nama dari input nama sertifikat atau input nama siswa
+            let nama = document.getElementById('namaSertifikat').value || 
+                      document.getElementById('namaSiswa').value || 
+                      'Saya';
+            
+            // Gunakan nilai dari hasil ujian
+            const nilai = document.getElementById('nilaiAkhir')?.textContent || '100';
+            
+            // Format pesan profesional
+            const message = `*SERTIFIKAT PENYELESAIAN PEMBELAJARAN*\n\nNama: ${nama}\nKelas: 10 PM 2 - SMK FAJAR\nNilai Akhir: ${nilai}\n\nSaya dengan bangga menyelesaikan modul pembelajaran Dasar-dasar Informatika dengan baik. Terima kasih atas bimbingannya.\n\n*SMK FAJAR*\n"Menuju Generasi Digital yang Berkarakter"`;
+            
+            const encodedMessage = encodeURIComponent(message);
+            
+            // URL WhatsApp dengan pesan
+            const whatsappUrl = `https://wa.me/?text=${encodedMessage}`;
+            
+            // Buka jendela baru untuk WhatsApp
+            window.open(whatsappUrl, '_blank');
+            
+            // Tampilkan notifikasi
+            showNotification('Membuka WhatsApp untuk berbagi', 'success');
+        }
+        
+        // Fungsi untuk toggle bookmark
+        function toggleBookmark(materiId) {
+            const bookmarkBtn = document.getElementById(`bookmark${materiId}`);
+            const isBookmarked = bookmarkBtn.querySelector('i').classList.contains('fas');
+            
+            if (isBookmarked) {
+                bookmarkBtn.innerHTML = '<i class="far fa-bookmark"></i> Bookmark';
+                showNotification('Bookmark dihapus', 'info');
+            } else {
+                bookmarkBtn.innerHTML = '<i class="fas fa-bookmark"></i> Bookmark';
+                showNotification('Materi ditandai', 'success');
+            }
+        }
+        
+        // Fungsi untuk setup bookmark
+        function setupBookmarks() {
+            const bookmarks = document.querySelectorAll('[id^="bookmarkMateri"]');
+            
+            bookmarks.forEach(bookmark => {
+                // Cek status bookmark dari localStorage
+                const sectionId = bookmark.id.replace('bookmark', '').toLowerCase();
+                const isBookmarked = localStorage.getItem(`bookmark_${sectionId}`) === 'true';
+                
+                if (isBookmarked) {
+                    bookmark.innerHTML = '<i class="fas fa-bookmark"></i> Bookmark';
+                }
+                
+                bookmark.addEventListener('click', function() {
+                    const sectionId = this.id.replace('bookmark', '').toLowerCase();
+                    const icon = this.querySelector('i');
+                    const isNowBookmarked = !icon.classList.contains('fas');
+                    
+                    // Update icon
+                    if (isNowBookmarked) {
+                        icon.classList.replace('far', 'fas');
+                        showNotification('Materi ditandai', 'success');
+                    } else {
+                        icon.classList.replace('fas', 'far');
+                        showNotification('Bookmark dihapus', 'info');
+                    }
+                    
+                    // Simpan status di localStorage
+                    localStorage.setItem(`bookmark_${sectionId}`, isNowBookmarked);
+                });
+            });
+        }
+        
+        // Fungsi untuk setup notifikasi
+        function setupNotification() {
+            // Close button
+            document.querySelector('.close-notif').addEventListener('click', function() {
+                document.getElementById('notification').classList.remove('show');
+            });
+            
+            // Auto-hide notifikasi setelah 5 detik
+            setInterval(() => {
+                const notif = document.getElementById('notification');
+                if (notif.classList.contains('show')) {
+                    notif.classList.remove('show');
+                }
+            }, 5000);
+        }
+        
+        // Fungsi untuk menampilkan notifikasi
+        function showNotification(message, type) {
+            const notif = document.getElementById('notification');
+            const icon = notif.querySelector('i');
+            const content = notif.querySelector('.notification-content');
+            
+            // Set icon dan warna berdasarkan type
+            notif.className = 'notification';
+            notif.classList.add(type);
+            
+            if (type === 'success') {
+                icon.className = 'fas fa-check-circle';
+            } else if (type === 'error') {
+                icon.className = 'fas fa-times-circle';
+            } else if (type === 'info') {
+                icon.className = 'fas fa-info-circle';
+            }
+            
+            // Set pesan
+            content.textContent = message;
+            
+            // Tampilkan notifikasi
+            notif.classList.add('show');
+        }
+        
+        // Close modal ketika klik di luar konten
+        window.onclick = function(event) {
+            const modal = document.getElementById('modalMateri');
+            if (event.target == modal) {
+                closeModal();
+            }
+        };
+    </script>
+</body>
+</html>
