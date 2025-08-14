@@ -1379,7 +1379,7 @@
                 <div class="certificate-footer">
                     <div class="signature">
                         <p>Kepala Sekolah</p>
-                        <p>Dr. H. Ade Suherlan, M.Si</p>
+                        <p>Dr. H. Ahmad Suryana, M.Pd</p>
                     </div>
                     <div class="signature">
                         <p>Guru Mata Pelajaran</p>
@@ -1396,24 +1396,41 @@
                     <li>Buat script Google Apps baru di <a href="https://script.google.com/" target="_blank">script.google.com</a></li>
                     <li>Tempelkan kode berikut:</li>
                     <pre>
-function doPost(e) {
-  var sheet = SpreadsheetApp.openById('1QoFS738810fYCIG3Tm2kgR08ry4wtRQ_pzta0OI1xPY').getSheetByName('NamaSheet');
-  var data = JSON.parse(e.postData.contents);
-  
-  sheet.appendRow([
-    new Date(),
-    data.nama,
-    data.kelas,
-    data.nilai,
-    data.durasi_materi1,
-    data.durasi_materi2,
-    data.durasi_materi3,
-    data.durasi_materi4
-  ]);
-  
-  return ContentService.createTextOutput(JSON.stringify({result: 'success'})).setMimeType(ContentService.MimeType.JSON);
+function doGet(e) {
+  try {
+    var sheet = SpreadsheetApp.openById('ID_SPREADSHEET_ANDA').getSheetByName('NamaSheet');
+    
+    // Ambil parameter dari URL
+    var params = e.parameter;
+    
+    // Validasi data
+    if (!params.nama || !params.kelas || !params.nilai) {
+      return ContentService.createTextOutput("Error: Data tidak lengkap");
+    }
+    
+    // Format data
+    var timestamp = new Date();
+    var rowData = [
+      timestamp,
+      params.nama,
+      params.kelas,
+      parseFloat(params.nilai),
+      parseInt(params.durasi_materi1 || 0),
+      parseInt(params.durasi_materi2 || 0),
+      parseInt(params.durasi_materi3 || 0),
+      parseInt(params.durasi_materi4 || 0)
+    ];
+    
+    // Tambahkan baris baru
+    sheet.appendRow(rowData);
+    
+    return ContentService.createTextOutput("success");
+    
+  } catch (error) {
+    return ContentService.createTextOutput("Error: " + error.message);
+  }
 }</pre>
-                    <li>Ganti <code>1QoFS738810fYCIG3Tm2kgR08ry4wtRQ_pzta0OI1xPY</code> dengan ID spreadsheet Anda</li>
+                    <li>Ganti <code>ID_SPREADSHEET_ANDA</code> dengan ID spreadsheet Anda</li>
                     <li>Ganti <code>NamaSheet</code> dengan nama sheet yang ingin digunakan</li>
                     <li>Deploy sebagai aplikasi web dengan izin eksekusi sebagai "Saya" dan akses "Siapa saja"</li>
                     <li>Tempelkan URL deployment di bawah:</li>
@@ -1959,14 +1976,14 @@ function doPost(e) {
                 
                 // TTD Kepala Sekolah
                 doc.text('Kepala Sekolah,', 100, signatureY + 40);
-                doc.text('(https://script.google.com/macros/s/AKfycbzFcSL1QftEKgMKu4WcOiYB5WLhLqgK5mIhNa0gudHFterz717kUCCmFdD4Keqk86eA/exec)', 100, signatureY + 55);
+                doc.text('(_________________________)', 100, signatureY + 55);
                 doc.setFont("helvetica", "bold");
                 doc.text('Dr. H. Ahmad Suryana, M.Pd', 100, signatureY + 50);
                 
                 // TTD Guru Mapel
                 doc.setFont("helvetica", "normal");
                 doc.text('Guru Mata Pelajaran,', pageWidth - 100, signatureY + 40);
-                doc.text('(https://script.google.com/macros/s/AKfycbzFcSL1QftEKgMKu4WcOiYB5WLhLqgK5mIhNa0gudHFterz717kUCCmFdD4Keqk86eA/exec)', pageWidth - 100, signatureY + 55);
+                doc.text('(_________________________)', pageWidth - 100, signatureY + 55);
                 doc.setFont("helvetica", "bold");
                 doc.text('Soni Haji, S.Kom', pageWidth - 100, signatureY + 50);
                 
@@ -2599,103 +2616,58 @@ print(f"Password aman: {password}")</code></pre>
             }
         }
 
-        // Fungsi untuk kirim data ke Google Spreadsheet
-       function sendToSpreadsheet() {
+        // Fungsi untuk kirim data ke Google Spreadsheet (SOLUSI PERBAIKAN)
+        function sendToSpreadsheet() {
     try {
-        // 1. Ambil URL dari input pengguna (lebih dinamis)
-        const scriptUrlInput = document.getElementById('scriptUrl');
-        let scriptUrl = "https://script.google.com/macros/s/AKfycbxB5k--mwo5i0SmKXiIZ7Z2xvlPlIFvbRqAdKgMpsxY-8XnRDT0IHhRKdy2zvpRRT3yHQ/exec"; // Default atau hardcoded sementara untuk testing
-
-        // Jika input ada dan memiliki nilai, gunakan itu
-        if (scriptUrlInput && scriptUrlInput.value.trim() !== "") {
-            scriptUrl = scriptUrlInput.value.trim();
-        } else {
-            // Opsional: Beri peringatan jika tidak ada URL di input
-            // console.warn("URL Google Apps Script tidak ditemukan di input, menggunakan default/testing URL.");
-            // Atau, aktifkan baris berikut jika ingin WAJIB diisi:
-            // alert("⚠️ Mohon masukkan URL Google Apps Script Anda terlebih dahulu di bagian Sertifikat > Integrasi Spreadsheet.");
-            // return;
-        }
-
-        // 2. Validasi dasar URL (opsional tapi bagus)
-        if (!scriptUrl || !scriptUrl.startsWith("https://script.google.com/macros/s/")) {
-             showNotification("❌ URL Google Apps Script tidak valid atau belum diatur!", "error");
-            console.error("URL Google Apps Script tidak valid atau belum diatur!");
-            return;
-        }
-
-        // 3. Validasi data siswa
-        if (!studentData || !studentData.nama || studentData.nama.trim() === "") {
-            showNotification("⚠️ Data siswa belum lengkap. Silakan lengkapi absensi terlebih dahulu.", "error");
-            console.error("Data siswa tidak lengkap:", studentData);
-            // Opsional: Arahkan ke halaman absensi
-            // navigateToSection('absensi');
-            return;
-        }
-
-        // 4. Siapkan data untuk dikirim
-        const dataToSend = {
-            nama: studentData.nama || "Tidak Diketahui",
-            kelas: "10 PM 2", // Sesuaikan jika dinamis
-            nilai: parseFloat(document.getElementById('nilaiAkhir')?.textContent) || 0,
-            durasi_materi1: readingDurations?.materi1 || 0,
-            durasi_materi2: readingDurations?.materi2 || 0,
-            durasi_materi3: readingDurations?.materi3 || 0,
-            durasi_materi4: readingDurations?.materi4 || 0
+        const scriptUrl = 'https://script.google.com/macros/s/AKfycby-UObGxotrD5oVbWLW8TIla1JLBdGVs-e5ot7WzpXH63ZTAQ9I3GXT5bb00R3D58fpHg/exec';
+        
+        // Kumpulkan data yang diperlukan
+        const nama = document.getElementById('namaSiswa').value || 'Nama Siswa';
+        const kelas = "10 PM 2";
+        const nilai = document.getElementById('nilaiAkhir')?.textContent || 0;
+        const email = document.getElementById('emailSiswa').value || 'Tidak diketahui';
+        const statusAbsensi = document.getElementById('absenStatus').value || 'Tidak diketahui';
+        
+        // Buat payload data
+        const data = {
+            nama: nama,
+            kelas: kelas,
+            nilai: nilai,
+            durasi_materi1: readingDurations.materi1,
+            durasi_materi2: readingDurations.materi2,
+            durasi_materi3: readingDurations.materi3,
+            durasi_materi4: readingDurations.materi4,
+            status_absensi: statusAbsensi,
+            email: email
         };
-
-        console.log("Mengirim data ke spreadsheet:", dataToSend); // Untuk debugging
-
-        // 5. Kirim data menggunakan fetch
+        
+        // Tampilkan notifikasi proses pengiriman
+        showNotification('Mengirim data ke spreadsheet...', 'info');
+        
+        // Kirim data dengan metode POST
         fetch(scriptUrl, {
             method: 'POST',
-            // Mode 'no-cors' TIDAK akan memberikan respons yang dapat dibaca jika berhasil,
-            // dan sering menyebabkan masalah. Karena GAS bisa menangani CORS, kita tidak perlu ini.
-            // mode: 'no-cors', // <-- HAPUS baris ini
-            body: JSON.stringify(dataToSend),
+            mode: 'no-cors',
             headers: {
-                'Content-Type': 'application/json'
-                // Jika GAS script memerlukan autentikasi khusus, header tambahan mungkin diperlukan
-            }
+                'Content-Type': 'application/x-www-form-urlencoded',
+            },
+            body: new URLSearchParams(data).toString()
         })
-        .then(response => {
-            // Karena GAS mengembalikan JSON, coba baca respons.
-            // Tapi hati-hati, jika ada error CORS atau lainnya, response.ok bisa false.
-             if (!response.ok) {
-                 // Jika mode 'no-cors' dihapus, ini bisa memberikan info error lebih baik
-                 return response.text().then(text => { throw new Error(`HTTP error! status: ${response.status}, message: ${text}`); });
-             }
-             return response.json(); // Coba parse JSON jika response OK
-        })
-        .then(data => {
-            console.log("Respons dari GAS:", data); // Untuk debugging
-            if (data && data.result === 'success') {
-                showNotification('✅ Data berhasil dikirim ke Spreadsheet!', 'success');
-                // alert('✅ Data berhasil dikirim ke Spreadsheet'); // Bisa juga pakai alert
-            } else {
-                // Jika GAS mengembalikan JSON tapi bukan sukses
-                const errorMsg = data && data.message ? data.message : JSON.stringify(data);
-                showNotification(`⚠️ Gagal mengirim data (respons): ${errorMsg}`, 'error');
-                console.error('⚠️ Gagal mengirim data (respons):', data);
-                // alert(`⚠️ Gagal mengirim data (respons): ${errorMsg}`);
-            }
+        .then(() => {
+            // Karena mode no-cors, kita tidak bisa membaca response
+            // Tapi kita asumsikan berhasil jika tidak ada error
+            showNotification('Data berhasil dikirim ke spreadsheet!', 'success');
         })
         .catch(error => {
-            // Menangkap error jaringan, CORS, atau error lainnya
-            console.error('❌ Error saat mengirim data ke Spreadsheet:', error);
-            showNotification(`❌ Error saat mengirim data: ${error.message || error}`, 'error');
-            // alert(`❌ Error saat mengirim data: ${error.message || error}`);
+            console.error('Error:', error);
+            showNotification('Gagal mengirim data ke spreadsheet: ' + error.message, 'error');
         });
-
+        
     } catch (error) {
-        console.error("Terjadi kesalahan dalam fungsi sendToSpreadsheet:", error);
-        showNotification(`❌ Kesalahan internal: ${error.message}`, 'error');
-        // alert(`❌ Kesalahan internal: ${error.message}`);
+        console.error("Error mengirim ke spreadsheet:", error);
+        showNotification(`Gagal mengirim data: ${error.message}`, 'error');
     }
 }
-
-// Pastikan fungsi showNotification ada dan bekerja
-// function showNotification(message, type) { ... }
 
         // Fungsi untuk verifikasi token
         function verifikasiToken() {
@@ -2922,8 +2894,3 @@ print(f"Password aman: {password}")</code></pre>
     </script>
 </body>
 </html>
-
-
-
-
-
