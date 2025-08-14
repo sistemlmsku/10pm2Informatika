@@ -2591,13 +2591,13 @@ print(f"Password aman: {password}")</code></pre>
         }
 
         // Fungsi untuk kirim data ke Google Spreadsheet (SOLUSI PERBAIKAN)
-       function sendToSpreadsheet() {
+      async function sendToSpreadsheet() {
     try {
         const scriptUrl = 'https://script.google.com/macros/s/AKfycby-UObGxotrD5oVbWLW8TIla1JLBdGVs-e5ot7WzpXH63ZTAQ9I3GXT5bb00R3D58fpHg/exec';
         
-        // Kumpulkan data dengan validasi
-        const payload = {
-            nama: encodeURIComponent(document.getElementById('namaSiswa').value || 'Nama Siswa'),
+        // Kumpulkan data dengan encoding yang benar
+        const data = {
+            nama: document.getElementById('namaSiswa').value.trim() || 'Nama Siswa',
             kelas: "10 PM 2",
             nilai: document.getElementById('nilaiAkhir')?.textContent || 0,
             durasi_materi1: readingDurations.materi1 || 0,
@@ -2605,47 +2605,55 @@ print(f"Password aman: {password}")</code></pre>
             durasi_materi3: readingDurations.materi3 || 0,
             durasi_materi4: readingDurations.materi4 || 0,
             status_absensi: document.getElementById('absenStatus').value || 'Tidak diketahui',
-            email: encodeURIComponent(document.getElementById('emailSiswa').value || 'Tidak diketahui')
+            email: document.getElementById('emailSiswa').value.trim() || 'Tidak diketahui'
         };
+
+        // Validasi data
+        if (!data.nama || data.nama === 'Nama Siswa') {
+            throw new Error('Nama siswa tidak valid');
+        }
 
         showNotification('Mengirim data ke spreadsheet...', 'info');
         
         // Gunakan fetch dengan error handling lebih baik
-        fetch(scriptUrl, {
+        const response = await fetch(scriptUrl, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/x-www-form-urlencoded',
             },
-            body: new URLSearchParams(payload).toString()
-        })
-        .then(response => {
-            if (!response.ok) {
-                throw new Error('Network response was not ok');
-            }
-            return response.text();
-        })
-        .then(text => {
-            try {
-                // Coba parse JSON jika memungkinkan
-                const data = text ? JSON.parse(text) : {};
-                if (data.status === 'success') {
-                    showNotification('Data berhasil dikirim!', 'success');
-                } else {
-                    showNotification(data.message || 'Terjadi kesalahan', 'error');
-                }
-            } catch {
-                // Jika bukan JSON, tampilkan respon mentah
-                showNotification(text || 'Data terkirim', 'success');
-            }
-        })
-        .catch(error => {
-            console.error('Error:', error);
-            showNotification(`Gagal mengirim: ${error.message}`, 'error');
+            body: new URLSearchParams(data).toString()
         });
 
+        const responseText = await response.text();
+        
+        // Coba parse JSON, jika gagal tampilkan response asli
+        try {
+            const jsonResponse = JSON.parse(responseText);
+            if (jsonResponse.status === 'success') {
+                showNotification('Data berhasil dikirim ke spreadsheet!', 'success');
+            } else {
+                throw new Error(jsonResponse.message || 'Gagal menyimpan data');
+            }
+        } catch (e) {
+            // Jika bukan JSON, tampilkan response asli
+            if (responseText.includes('success')) {
+                showNotification('Data berhasil dikirim!', 'success');
+            } else {
+                throw new Error(responseText || 'Respon tidak valid dari server');
+            }
+        }
+        
     } catch (error) {
-        console.error("Error:", error);
-        showNotification(`Error sistem: ${error.message}`, 'error');
+        console.error('Error:', error);
+        showNotification(`Gagal mengirim data: ${error.message}`, 'error');
+        
+        // Tampilkan error lebih detail di console
+        console.log('Data yang dikirim:', {
+            nama: document.getElementById('namaSiswa').value,
+            email: document.getElementById('emailSiswa').value,
+            nilai: document.getElementById('nilaiAkhir')?.textContent,
+            durasi: readingDurations
+        });
     }
 }
         // Fungsi untuk verifikasi token
@@ -2873,5 +2881,6 @@ print(f"Password aman: {password}")</code></pre>
     </script>
 </body>
 </html>
+
 
 
