@@ -2601,58 +2601,36 @@ print(f"Password aman: {password}")</code></pre>
 
         // Fungsi untuk kirim data ke Google Spreadsheet
         function sendToSpreadsheet() {
-            try {
-                const scriptUrl = document.getElementById('scriptUrl').value;
-                
-                if (!scriptUrl) {
-                   const scriptUrl = "https://script.google.com/macros/s/AKfycbzFcSL1QftEKgMKu4WcOiYB5WLhLqgK5mIhNa0gudHFterz717kUCCmFdD4Keqk86eA/exec";
-                    return;
-                }
-                
-                // Kumpulkan data yang diperlukan
-                const nama = document.getElementById('namaSiswa').value || 'Nama Siswa';
-                const kelas = "10 PM 2";
-                const nilai = document.getElementById('nilaiAkhir')?.textContent || 0;
-                
-                // Buat payload data
-                const data = {
-                    nama: nama,
-                    kelas: kelas,
-                    nilai: nilai,
-                    durasi_materi1: readingDurations.materi1,
-                    durasi_materi2: readingDurations.materi2,
-                    durasi_materi3: readingDurations.materi3,
-                    durasi_materi4: readingDurations.materi4
-                };
-                
-                // Kirim data ke Google Apps Script
-                fetch(scriptUrl, {
-                    method: 'POST',
-                    mode: 'no-cors',
-                    headers: {
-                        'Content-Type': 'application/json',
-                    },
-                    body: JSON.stringify(data)
-                })
-                .then(response => response.json())
-                .then(result => {
-                    if (result.result === 'success') {
-                        showNotification('Data berhasil dikirim ke spreadsheet!', 'success');
-                    } else {
-                        showNotification('Gagal mengirim data ke spreadsheet', 'error');
-                    }
-                })
-                .catch(error => {
-                    console.error('Error:', error);
-                    showNotification('Gagal mengirim data ke spreadsheet', 'error');
-                });
-                
-            } catch (error) {
-                console.error("Error mengirim ke spreadsheet:", error);
-                showNotification(`Gagal mengirim data: ${error.message}`, 'error');
-            }
-        }
+    // URL Google Apps Script langsung di-hardcode
+    const scriptUrl = "https://script.google.com/macros/s/AKfycbxB5k--mwo5i0SmKXiIZ7Z2xvlPlIFvbRqAdKgMpsxY-8XnRDT0IHhRKdy2zvpRRT3yHQ/exec";
 
+    const data = {
+        nama: studentData.nama,
+        kelas: "10 PM 2",
+        nilai: document.getElementById('nilaiAkhir').textContent,
+        durasi_materi1: readingDurations.materi1,
+        durasi_materi2: readingDurations.materi2,
+        durasi_materi3: readingDurations.materi3,
+        durasi_materi4: readingDurations.materi4
+    };
+
+    fetch(scriptUrl, {
+        method: 'POST',
+        body: JSON.stringify(data),
+        headers: { 'Content-Type': 'application/json' }
+    })
+    .then(res => res.json())
+    .then(response => {
+        if (response.result === 'success') {
+            showNotification('✅ Data berhasil dikirim ke Spreadsheet', 'success');
+        } else {
+            showNotification('⚠️ Gagal mengirim data: ' + JSON.stringify(response), 'error');
+        }
+    })
+    .catch(err => {
+        showNotification('❌ Error: ' + err.message, 'error');
+    });
+}
         // Fungsi untuk verifikasi token
         function verifikasiToken() {
             const token = document.getElementById('tokenUjian').value;
@@ -2878,4 +2856,5 @@ print(f"Password aman: {password}")</code></pre>
     </script>
 </body>
 </html>
+
 
