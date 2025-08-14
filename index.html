@@ -2605,7 +2605,7 @@ print(f"Password aman: {password}")</code></pre>
                 const scriptUrl = document.getElementById('scriptUrl').value;
                 
                 if (!scriptUrl) {
-                    showNotification('Masukkan URL Google Apps Script terlebih dahulu', 'error');
+                   const scriptUrl = "https://script.google.com/macros/s/AKfycbzFcSL1QftEKgMKu4WcOiYB5WLhLqgK5mIhNa0gudHFterz717kUCCmFdD4Keqk86eA/exec";
                     return;
                 }
                 
@@ -2628,7 +2628,7 @@ print(f"Password aman: {password}")</code></pre>
                 // Kirim data ke Google Apps Script
                 fetch(scriptUrl, {
                     method: 'POST',
-                    mode: 'cors',
+                    mode: 'no-cors',
                     headers: {
                         'Content-Type': 'application/json',
                     },
@@ -2878,3 +2878,4 @@ print(f"Password aman: {password}")</code></pre>
     </script>
 </body>
 </html>
+
