@@ -721,6 +721,7 @@
             cursor: pointer;
             transition: var(--transition);
             font-weight: 500;
+            box-shadow: var(--box-shadow);
         }
 
         .share-btn:hover {
@@ -1390,9 +1391,38 @@
             <!-- Form Integrasi Spreadsheet -->
             <div class="spreadsheet-form">
                 <h3>Integrasi dengan Google Spreadsheet</h3>
-                <p>Data pembelajaran Anda akan otomatis dikirim ke Google Spreadsheet:</p>
-                <p><strong>ID Spreadsheet: 1QoFS738810fYCIG3Tm2kgR08ry4wtRQ_pzta0OI1xPY</strong></p>
-                <p>Sheet: DataSiswa</p>
+                <p>Untuk mengirim data ke Google Spreadsheet:</p>
+                <ol>
+                    <li>Buat script Google Apps baru di <a href="https://script.google.com/" target="_blank">script.google.com</a></li>
+                    <li>Tempelkan kode berikut:</li>
+                    <pre>
+function doPost(e) {
+  var sheet = SpreadsheetApp.openById('1QoFS738810fYCIG3Tm2kgR08ry4wtRQ_pzta0OI1xPY').getSheetByName('NamaSheet');
+  var data = JSON.parse(e.postData.contents);
+  
+  sheet.appendRow([
+    new Date(),
+    data.nama,
+    data.kelas,
+    data.nilai,
+    data.durasi_materi1,
+    data.durasi_materi2,
+    data.durasi_materi3,
+    data.durasi_materi4
+  ]);
+  
+  return ContentService.createTextOutput(JSON.stringify({result: 'success'})).setMimeType(ContentService.MimeType.JSON);
+}</pre>
+                    <li>Ganti <code>1QoFS738810fYCIG3Tm2kgR08ry4wtRQ_pzta0OI1xPY</code> dengan ID spreadsheet Anda</li>
+                    <li>Ganti <code>NamaSheet</code> dengan nama sheet yang ingin digunakan</li>
+                    <li>Deploy sebagai aplikasi web dengan izin eksekusi sebagai "Saya" dan akses "Siapa saja"</li>
+                    <li>Tempelkan URL deployment di bawah:</li>
+                </ol>
+                
+                <div class="form-group">
+                    <label for="scriptUrl">URL Google Apps Script</label>
+                    <input type="text" id="scriptUrl" placeholder="Tempelkan URL Google Apps Script Anda">
+                </div>
             </div>
             
             <div class="progress-container">
@@ -1929,14 +1959,14 @@
                 
                 // TTD Kepala Sekolah
                 doc.text('Kepala Sekolah,', 100, signatureY + 40);
-                doc.text('(_________________________)', 100, signatureY + 55);
+                doc.text('(https://script.google.com/macros/s/AKfycbzFcSL1QftEKgMKu4WcOiYB5WLhLqgK5mIhNa0gudHFterz717kUCCmFdD4Keqk86eA/exec)', 100, signatureY + 55);
                 doc.setFont("helvetica", "bold");
                 doc.text('Dr. H. Ahmad Suryana, M.Pd', 100, signatureY + 50);
                 
                 // TTD Guru Mapel
                 doc.setFont("helvetica", "normal");
                 doc.text('Guru Mata Pelajaran,', pageWidth - 100, signatureY + 40);
-                doc.text('(_________________________)', pageWidth - 100, signatureY + 55);
+                doc.text('(https://script.google.com/macros/s/AKfycbzFcSL1QftEKgMKu4WcOiYB5WLhLqgK5mIhNa0gudHFterz717kUCCmFdD4Keqk86eA/exec)', pageWidth - 100, signatureY + 55);
                 doc.setFont("helvetica", "bold");
                 doc.text('Soni Haji, S.Kom', pageWidth - 100, signatureY + 50);
                 
@@ -2572,7 +2602,12 @@ print(f"Password aman: {password}")</code></pre>
         // Fungsi untuk kirim data ke Google Spreadsheet
         function sendToSpreadsheet() {
             try {
-                const scriptUrl = "https://script.google.com/macros/s/AKfycbzFcSL1QftEKgMKu4WcOiYB5WLhLqgK5mIhNa0gudHFterz717kUCCmFdD4Keqk86eA/exec";
+                const scriptUrl = document.getElementById('scriptUrl').value;
+                
+                if (!scriptUrl) {
+                    showNotification('Masukkan URL Google Apps Script terlebih dahulu', 'error');
+                    return;
+                }
                 
                 // Kumpulkan data yang diperlukan
                 const nama = document.getElementById('namaSiswa').value || 'Nama Siswa';
