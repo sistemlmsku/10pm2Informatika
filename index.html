@@ -2602,49 +2602,100 @@ print(f"Password aman: {password}")</code></pre>
         // Fungsi untuk kirim data ke Google Spreadsheet
        function sendToSpreadsheet() {
     try {
-        const scriptUrl = "https://script.google.com/macros/s/AKfycbxB5k--mwo5i0SmKXiIZ7Z2xvlPlIFvbRqAdKgMpsxY-8XnRDT0IHhRKdy2zvpRRT3yHQ/exec";
+        // 1. Ambil URL dari input pengguna (lebih dinamis)
+        const scriptUrlInput = document.getElementById('scriptUrl');
+        let scriptUrl = "https://script.google.com/macros/s/AKfycbxB5k--mwo5i0SmKXiIZ7Z2xvlPlIFvbRqAdKgMpsxY-8XnRDT0IHhRKdy2zvpRRT3yHQ/exec"; // Default atau hardcoded sementara untuk testing
 
-        if (!scriptUrl) {
-            alert("URL Google Apps Script belum diatur!");
+        // Jika input ada dan memiliki nilai, gunakan itu
+        if (scriptUrlInput && scriptUrlInput.value.trim() !== "") {
+            scriptUrl = scriptUrlInput.value.trim();
+        } else {
+            // Opsional: Beri peringatan jika tidak ada URL di input
+            // console.warn("URL Google Apps Script tidak ditemukan di input, menggunakan default/testing URL.");
+            // Atau, aktifkan baris berikut jika ingin WAJIB diisi:
+            // alert("⚠️ Mohon masukkan URL Google Apps Script Anda terlebih dahulu di bagian Sertifikat > Integrasi Spreadsheet.");
+            // return;
+        }
+
+        // 2. Validasi dasar URL (opsional tapi bagus)
+        if (!scriptUrl || !scriptUrl.startsWith("https://script.google.com/macros/s/")) {
+             showNotification("❌ URL Google Apps Script tidak valid atau belum diatur!", "error");
+            console.error("URL Google Apps Script tidak valid atau belum diatur!");
             return;
         }
 
-        if (!studentData || !studentData.nama) {
-            alert("Data siswa belum diisi. Lengkapi absensi dulu.");
+        // 3. Validasi data siswa
+        if (!studentData || !studentData.nama || studentData.nama.trim() === "") {
+            showNotification("⚠️ Data siswa belum lengkap. Silakan lengkapi absensi terlebih dahulu.", "error");
+            console.error("Data siswa tidak lengkap:", studentData);
+            // Opsional: Arahkan ke halaman absensi
+            // navigateToSection('absensi');
             return;
         }
 
-        const data = {
-            nama: studentData.nama,
-            kelas: "10 PM 2",
-            nilai: document.getElementById('nilaiAkhir')?.textContent || 0,
+        // 4. Siapkan data untuk dikirim
+        const dataToSend = {
+            nama: studentData.nama || "Tidak Diketahui",
+            kelas: "10 PM 2", // Sesuaikan jika dinamis
+            nilai: parseFloat(document.getElementById('nilaiAkhir')?.textContent) || 0,
             durasi_materi1: readingDurations?.materi1 || 0,
             durasi_materi2: readingDurations?.materi2 || 0,
             durasi_materi3: readingDurations?.materi3 || 0,
             durasi_materi4: readingDurations?.materi4 || 0
         };
 
+        console.log("Mengirim data ke spreadsheet:", dataToSend); // Untuk debugging
+
+        // 5. Kirim data menggunakan fetch
         fetch(scriptUrl, {
             method: 'POST',
-            body: JSON.stringify(data),
-            headers: { 'Content-Type': 'application/json' }
-        })
-        .then(res => res.json())
-        .then(response => {
-            if (response.result === 'success') {
-                alert('✅ Data berhasil dikirim ke Spreadsheet');
-            } else {
-                alert('⚠️ Gagal mengirim data: ' + JSON.stringify(response));
+            // Mode 'no-cors' TIDAK akan memberikan respons yang dapat dibaca jika berhasil,
+            // dan sering menyebabkan masalah. Karena GAS bisa menangani CORS, kita tidak perlu ini.
+            // mode: 'no-cors', // <-- HAPUS baris ini
+            body: JSON.stringify(dataToSend),
+            headers: {
+                'Content-Type': 'application/json'
+                // Jika GAS script memerlukan autentikasi khusus, header tambahan mungkin diperlukan
             }
         })
-        .catch(err => {
-            alert('❌ Error: ' + err.message);
+        .then(response => {
+            // Karena GAS mengembalikan JSON, coba baca respons.
+            // Tapi hati-hati, jika ada error CORS atau lainnya, response.ok bisa false.
+             if (!response.ok) {
+                 // Jika mode 'no-cors' dihapus, ini bisa memberikan info error lebih baik
+                 return response.text().then(text => { throw new Error(`HTTP error! status: ${response.status}, message: ${text}`); });
+             }
+             return response.json(); // Coba parse JSON jika response OK
+        })
+        .then(data => {
+            console.log("Respons dari GAS:", data); // Untuk debugging
+            if (data && data.result === 'success') {
+                showNotification('✅ Data berhasil dikirim ke Spreadsheet!', 'success');
+                // alert('✅ Data berhasil dikirim ke Spreadsheet'); // Bisa juga pakai alert
+            } else {
+                // Jika GAS mengembalikan JSON tapi bukan sukses
+                const errorMsg = data && data.message ? data.message : JSON.stringify(data);
+                showNotification(`⚠️ Gagal mengirim data (respons): ${errorMsg}`, 'error');
+                console.error('⚠️ Gagal mengirim data (respons):', data);
+                // alert(`⚠️ Gagal mengirim data (respons): ${errorMsg}`);
+            }
+        })
+        .catch(error => {
+            // Menangkap error jaringan, CORS, atau error lainnya
+            console.error('❌ Error saat mengirim data ke Spreadsheet:', error);
+            showNotification(`❌ Error saat mengirim data: ${error.message || error}`, 'error');
+            // alert(`❌ Error saat mengirim data: ${error.message || error}`);
         });
 
     } catch (error) {
-        alert("Terjadi kesalahan: " + error.message);
+        console.error("Terjadi kesalahan dalam fungsi sendToSpreadsheet:", error);
+        showNotification(`❌ Kesalahan internal: ${error.message}`, 'error');
+        // alert(`❌ Kesalahan internal: ${error.message}`);
     }
 }
+
+// Pastikan fungsi showNotification ada dan bekerja
+// function showNotification(message, type) { ... }
 
         // Fungsi untuk verifikasi token
         function verifikasiToken() {
@@ -2871,6 +2922,7 @@ print(f"Password aman: {password}")</code></pre>
     </script>
 </body>
 </html>
+
 
 
 
