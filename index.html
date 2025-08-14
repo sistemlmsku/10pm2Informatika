@@ -1,14 +1,6 @@
 <!DOCTYPE html>
 <html lang="id">
 <head>
-    <script>
-// Fungsi untuk menangani semua error yang tidak tertangkap
-window.onerror = function(message, source, lineno, colno, error) {
-    console.error("Global error:", message, "at", source, lineno, ":", colno);
-    showNotification("Terjadi kesalahan sistem: " + message, 'error');
-    return true;
-};
-</script>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>LMS SMK FAJAR - Kelas 10 PM 2</title>
@@ -1405,7 +1397,6 @@ window.onerror = function(message, source, lineno, colno, error) {
                     <li>Tempelkan kode berikut:</li>
                     <pre>
 function doGet(e) {
-  function doGet(e) {
   var response = {
     status: 'error',
     message: 'Terjadi kesalahan',
@@ -1467,7 +1458,6 @@ function doGet(e) {
   // Kembalikan response sebagai JSON yang valid
   return ContentService.createTextOutput(JSON.stringify(response))
     .setMimeType(ContentService.MimeType.JSON);
-}
 }</pre>
                     <li>Ganti <code>ID_SPREADSHEET_ANDA</code> dengan ID spreadsheet Anda</li>
                     <li>Ganti <code>NamaSheet</code> dengan nama sheet yang ingin digunakan</li>
@@ -1897,159 +1887,159 @@ function doGet(e) {
 
         // Fungsi untuk generate sertifikat
         function generateCertificate() {
-    try {
-        // Pastikan jsPDF tersedia
-        if (typeof jsPDF === 'undefined') {
-            throw new Error('Pustaka PDF tidak terdeteksi');
+            try {
+                // Pastikan jsPDF tersedia
+                if (typeof jsPDF === 'undefined') {
+                    throw new Error('Pustaka PDF tidak terdeteksi');
+                }
+
+                // Ambil data yang diperlukan
+                const nama = document.getElementById('namaSertifikat').value || 
+                            document.getElementById('namaSiswa').value || 
+                            'Peserta';
+                
+                const nilai = document.getElementById('nilaiAkhir')?.textContent || '100';
+                
+                // Hitung durasi total
+                const totalDurasi = Object.values(readingDurations).reduce((a, b) => a + b, 0);
+                const menitTotal = Math.floor(totalDurasi / 60);
+                const detikTotal = totalDurasi % 60;
+                const durasiFormatted = `${menitTotal} menit ${detikTotal} detik`;
+                
+                // Tanggal hari ini
+                const today = new Date();
+                const options = { year: 'numeric', month: 'long', day: 'numeric' };
+                const tanggal = today.toLocaleDateString('id-ID', options);
+                
+                // Buat PDF
+                const doc = new jsPDF({
+                    orientation: 'landscape',
+                    unit: 'mm',
+                    format: 'a4'
+                });
+
+                // Ukuran halaman
+                const pageWidth = doc.internal.pageSize.getWidth();
+                const pageHeight = doc.internal.pageSize.getHeight();
+
+                // Background
+                doc.setFillColor(240, 245, 249);
+                doc.rect(0, 0, pageWidth, pageHeight, 'F');
+
+                // Border
+                doc.setDrawColor(52, 152, 219);
+                doc.setLineWidth(1);
+                doc.roundedRect(10, 10, pageWidth - 20, pageHeight - 20, 5, 5, 'S');
+
+                // Header sekolah
+                doc.setFont("helvetica", "bold");
+                doc.setFontSize(18);
+                doc.setTextColor(52, 152, 219);
+                doc.text('SMK FAJAR', pageWidth / 2, 25, { align: 'center' });
+                doc.setFontSize(14);
+                doc.setTextColor(100, 100, 100);
+                doc.text('TERAKREDITASI A', pageWidth / 2, 30, { align: 'center' });
+                doc.setFontSize(10);
+                doc.text('NPSN: 69860537 | Jl.AMD No. 39 Babakan Ciseeng Kab.Bogor', pageWidth / 2, 35, { align: 'center' });
+
+                // Judul sertifikat
+                doc.setFont("times", "bold");
+                doc.setFontSize(28);
+                doc.setTextColor(30, 30, 30);
+                doc.text('SERTIFIKAT PENYELESAIAN', pageWidth / 2, 55, { align: 'center' });
+
+                // Subjudul
+                doc.setFontSize(16);
+                doc.setTextColor(100, 100, 100);
+                doc.text('MODUL PEMBELAJARAN DASAR-DASAR INFORMATIKA', pageWidth / 2, 63, { align: 'center' });
+
+                // Penerima sertifikat
+                doc.setFontSize(20);
+                doc.setTextColor(30, 30, 30);
+                doc.setFont("helvetica", "bold");
+                doc.text('Diberikan Kepada:', pageWidth / 2, 85, { align: 'center' });
+
+                // Nama siswa
+                doc.setFontSize(32);
+                doc.text(nama.toUpperCase(), pageWidth / 2, 100, { align: 'center' });
+
+                // Detail siswa
+                doc.setFontSize(14);
+                doc.setTextColor(100, 100, 100);
+                doc.text('Jurusan: Bisnis Daring Dan Pemasaran (BDP) | Kelas: 10 PM 2', pageWidth / 2, 110, { align: 'center' });
+
+                // Detail pembelajaran
+                const startY = 130;
+                doc.setFontSize(12);
+                doc.text(`Total Durasi Pembelajaran: ${durasiFormatted}`, pageWidth / 2, startY, { align: 'center' });
+                doc.text(`Nilai Akhir: ${nilai}`, pageWidth / 2, startY + 8, { align: 'center' });
+
+                // Garis pembatas
+                doc.setDrawColor(200, 200, 200);
+                doc.setLineWidth(0.5);
+                doc.line(60, startY + 30, pageWidth - 60, startY + 30);
+
+                // Tanda tangan
+                const signatureY = startY + 50;
+                doc.setFontSize(12);
+                doc.text(`Kota Pendidikan, ${tanggal}`, pageWidth / 2, signatureY, { align: 'center' });
+                doc.text('Kepala Sekolah,', 100, signatureY + 40);
+                doc.text('(_________________________)', 100, signatureY + 55);
+                doc.setFont("Old English Text MT", "bold");
+                doc.text('Dr. H. Ade Suherlan, M.Si', 100, signatureY + 50);
+                doc.setFont("helvetica", "normal");
+                doc.text('Guru Mata Pelajaran,', pageWidth - 100, signatureY + 40);
+                doc.text('(_________________________)', pageWidth - 100, signatureY + 55);
+                doc.setFont("Old English Text MT", "bold");
+                doc.text('Soni Haji, S.Kom', pageWidth - 100, signatureY + 50);
+
+                // Nomor sertifikat
+                doc.setFontSize(10);
+                doc.setTextColor(150, 150, 150);
+                doc.text(`Nomor Sertifikat: CERT-${today.getFullYear()}${(today.getMonth()+1).toString().padStart(2, '0')}${Math.floor(Math.random() * 1000).toString().padStart(3, '0')}`, 
+                        pageWidth - 20, pageHeight - 15, { align: 'right' });
+
+                // Download sertifikat
+                const safeName = nama.replace(/[^a-z0-9]/gi, '_').substring(0, 30);
+                const fileName = `Sertifikat_${safeName}.pdf`;
+
+                // Coba metode save langsung
+                try {
+                    doc.save(fileName);
+                    showNotification('Sertifikat berhasil diunduh', 'success');
+                } catch (e) {
+                    console.log("Menggunakan metode alternatif untuk download", e);
+                    const pdfBlob = doc.output('blob');
+                    const url = URL.createObjectURL(pdfBlob);
+                    const link = document.createElement('a');
+                    link.href = url;
+                    link.download = fileName;
+                    document.body.appendChild(link);
+                    link.click();
+                    setTimeout(() => {
+                        document.body.removeChild(link);
+                        URL.revokeObjectURL(url);
+                    }, 100);
+                    showNotification('Sertifikat berhasil diunduh', 'success');
+                }
+
+                // Update status
+                const statusElement = document.getElementById('statusSertifikat');
+                if (statusElement) {
+                    statusElement.className = 'status success';
+                    statusElement.innerHTML = '<i class="fas fa-check-circle"></i> Sertifikat berhasil diunduh!';
+                }
+
+            } catch (error) {
+                console.error("Error membuat sertifikat:", error);
+                const statusElement = document.getElementById('statusSertifikat');
+                if (statusElement) {
+                    statusElement.className = 'status error';
+                    statusElement.innerHTML = `<i class="fas fa-exclamation-circle"></i> Gagal membuat sertifikat: ${error.message}`;
+                }
+                showNotification(`Gagal membuat sertifikat: ${error.message}`, 'error');
+            }
         }
-
-        // Ambil data yang diperlukan
-        const nama = document.getElementById('namaSertifikat').value || 
-                    document.getElementById('namaSiswa').value || 
-                    'Peserta';
-        
-        const nilai = document.getElementById('nilaiAkhir')?.textContent || '100';
-        
-        // Hitung durasi total
-        const totalDurasi = Object.values(readingDurations).reduce((a, b) => a + b, 0);
-        const menitTotal = Math.floor(totalDurasi / 60);
-        const detikTotal = totalDurasi % 60;
-        const durasiFormatted = `${menitTotal} menit ${detikTotal} detik`;
-        
-        // Tanggal hari ini
-        const today = new Date();
-        const options = { year: 'numeric', month: 'long', day: 'numeric' };
-        const tanggal = today.toLocaleDateString('id-ID', options);
-        
-        // Buat PDF
-        const doc = new jsPDF({
-            orientation: 'landscape',
-            unit: 'mm',
-            format: 'a4'
-        });
-
-        // Ukuran halaman
-        const pageWidth = doc.internal.pageSize.getWidth();
-        const pageHeight = doc.internal.pageSize.getHeight();
-
-        // Background
-        doc.setFillColor(240, 245, 249);
-        doc.rect(0, 0, pageWidth, pageHeight, 'F');
-
-        // Border
-        doc.setDrawColor(52, 152, 219);
-        doc.setLineWidth(1);
-        doc.roundedRect(10, 10, pageWidth - 20, pageHeight - 20, 5, 5, 'S');
-
-        // Header sekolah
-        doc.setFont("helvetica", "bold");
-        doc.setFontSize(18);
-        doc.setTextColor(52, 152, 219);
-        doc.text('SMK FAJAR', pageWidth / 2, 25, { align: 'center' });
-        doc.setFontSize(14);
-        doc.setTextColor(100, 100, 100);
-        doc.text('TERAKREDITASI A', pageWidth / 2, 30, { align: 'center' });
-        doc.setFontSize(10);
-        doc.text('NPSN: 69860537 | Jl.AMD No. 39 Babakan Ciseeng Kab.Bogor', pageWidth / 2, 35, { align: 'center' });
-
-        // Judul sertifikat
-        doc.setFont("times", "bold");
-        doc.setFontSize(28);
-        doc.setTextColor(30, 30, 30);
-        doc.text('SERTIFIKAT PENYELESAIAN', pageWidth / 2, 55, { align: 'center' });
-
-        // Subjudul
-        doc.setFontSize(16);
-        doc.setTextColor(100, 100, 100);
-        doc.text('MODUL PEMBELAJARAN DASAR-DASAR INFORMATIKA', pageWidth / 2, 63, { align: 'center' });
-
-        // Penerima sertifikat
-        doc.setFontSize(20);
-        doc.setTextColor(30, 30, 30);
-        doc.setFont("helvetica", "bold");
-        doc.text('Diberikan Kepada:', pageWidth / 2, 85, { align: 'center' });
-
-        // Nama siswa
-        doc.setFontSize(32);
-        doc.text(nama.toUpperCase(), pageWidth / 2, 100, { align: 'center' });
-
-        // Detail siswa
-        doc.setFontSize(14);
-        doc.setTextColor(100, 100, 100);
-        doc.text('Jurusan: Bisnis Daring Dan Pemasaran (BDP) | Kelas: 10 PM 2', pageWidth / 2, 110, { align: 'center' });
-
-        // Detail pembelajaran
-        const startY = 130;
-        doc.setFontSize(12);
-        doc.text(`Total Durasi Pembelajaran: ${durasiFormatted}`, pageWidth / 2, startY, { align: 'center' });
-        doc.text(`Nilai Akhir: ${nilai}`, pageWidth / 2, startY + 8, { align: 'center' });
-
-        // Garis pembatas
-        doc.setDrawColor(200, 200, 200);
-        doc.setLineWidth(0.5);
-        doc.line(60, startY + 30, pageWidth - 60, startY + 30);
-
-        // Tanda tangan
-        const signatureY = startY + 50;
-        doc.setFontSize(12);
-        doc.text(`Kota Pendidikan, ${tanggal}`, pageWidth / 2, signatureY, { align: 'center' });
-        doc.text('Kepala Sekolah,', 100, signatureY + 40);
-        doc.text('(_________________________)', 100, signatureY + 55);
-        doc.setFont("Old English Text MT", "bold");
-        doc.text('Dr. H. Ade Suherlan, M.Si', 100, signatureY + 50);
-        doc.setFont("helvetica", "normal");
-        doc.text('Guru Mata Pelajaran,', pageWidth - 100, signatureY + 40);
-        doc.text('(_________________________)', pageWidth - 100, signatureY + 55);
-        doc.setFont("Old English Text MT", "bold");
-        doc.text('Soni Haji, S.Kom', pageWidth - 100, signatureY + 50);
-
-        // Nomor sertifikat
-        doc.setFontSize(10);
-        doc.setTextColor(150, 150, 150);
-        doc.text(`Nomor Sertifikat: CERT-${today.getFullYear()}${(today.getMonth()+1).toString().padStart(2, '0')}${Math.floor(Math.random() * 1000).toString().padStart(3, '0')}`, 
-                pageWidth - 20, pageHeight - 15, { align: 'right' });
-
-        // Download sertifikat
-        const safeName = nama.replace(/[^a-z0-9]/gi, '_').substring(0, 30);
-        const fileName = `Sertifikat_${safeName}.pdf`;
-
-        // Coba metode save langsung
-        try {
-            doc.save(fileName);
-            showNotification('Sertifikat berhasil diunduh', 'success');
-        } catch (e) {
-            console.log("Menggunakan metode alternatif untuk download", e);
-            const pdfBlob = doc.output('blob');
-            const url = URL.createObjectURL(pdfBlob);
-            const link = document.createElement('a');
-            link.href = url;
-            link.download = fileName;
-            document.body.appendChild(link);
-            link.click();
-            setTimeout(() => {
-                document.body.removeChild(link);
-                URL.revokeObjectURL(url);
-            }, 100);
-            showNotification('Sertifikat berhasil diunduh', 'success');
-        }
-
-        // Update status
-        const statusElement = document.getElementById('statusSertifikat');
-        if (statusElement) {
-            statusElement.className = 'status success';
-            statusElement.innerHTML = '<i class="fas fa-check-circle"></i> Sertifikat berhasil diunduh!';
-        }
-
-    } catch (error) {
-        console.error("Error membuat sertifikat:", error);
-        const statusElement = document.getElementById('statusSertifikat');
-        if (statusElement) {
-            statusElement.className = 'status error';
-            statusElement.innerHTML = `<i class="fas fa-exclamation-circle"></i> Gagal membuat sertifikat: ${error.message}`;
-        }
-        showNotification(`Gagal membuat sertifikat: ${error.message}`, 'error');
-    }
-}
 
         // Fungsi untuk update preview sertifikat
         function updateCertificatePreview() {
@@ -2629,85 +2619,86 @@ print(f"Password aman: {password}")</code></pre>
             }
         }
 
-        // Fungsi untuk kirim data ke Google Spreadsheet (SOLUSI PERBAIKAN)
-function sendToSpreadsheet() {
-    return new Promise((resolve, reject) => {
-        try {
-            const scriptUrl = 'https://script.google.com/macros/s/AKfycby-UObGxotrD5oVbWLW8TIla1JLBdGVs-e5ot7WzpXH63ZTAQ9I3GXT5bb00R3D58fpHg/exec';
-            
-            // Data yang akan dikirim
-            const payload = {
-                action: 'save_data',
-                nama: document.getElementById('namaSiswa').value.trim(),
-                kelas: "10 PM 2",
-                nilai: document.getElementById('nilaiAkhir')?.textContent || 0,
-                durasi_materi1: readingDurations.materi1 || 0,
-                durasi_materi2: readingDurations.materi2 || 0,
-                durasi_materi3: readingDurations.materi3 || 0,
-                durasi_materi4: readingDurations.materi4 || 0,
-                status_absensi: document.getElementById('absenStatus').value || 'Tidak diketahui',
-                email: document.getElementById('emailSiswa').value.trim() || 'Tidak diketahui'
-            };
+        // Fungsi untuk kirim data ke Google Spreadsheet
+        function sendToSpreadsheet() {
+            return new Promise((resolve, reject) => {
+                try {
+                    const scriptUrl = 'https://script.google.com/macros/s/AKfycby-UObGxotrD5oVbWLW8TIla1JLBdGVs-e5ot7WzpXH63ZTAQ9I3GXT5bb00R3D58fpHg/exec';
+                    
+                    // Data yang akan dikirim
+                    const payload = {
+                        action: 'save_data',
+                        nama: document.getElementById('namaSiswa').value.trim(),
+                        kelas: "10 PM 2",
+                        nilai: document.getElementById('nilaiAkhir')?.textContent || 0,
+                        durasi_materi1: readingDurations.materi1 || 0,
+                        durasi_materi2: readingDurations.materi2 || 0,
+                        durasi_materi3: readingDurations.materi3 || 0,
+                        durasi_materi4: readingDurations.materi4 || 0,
+                        status_absensi: document.getElementById('absenStatus').value || 'Tidak diketahui',
+                        email: document.getElementById('emailSiswa').value.trim() || 'Tidak diketahui'
+                    };
 
-            // Validasi dasar
-            if (!payload.nama) {
-                throw new Error('Nama siswa harus diisi');
-            }
-
-            showNotification('Mengirim data ke spreadsheet...', 'info');
-
-            // Menggunakan XMLHttpRequest untuk kontrol lebih baik
-            const xhr = new XMLHttpRequest();
-            const url = scriptUrl + '?' + new URLSearchParams(payload).toString();
-            
-            xhr.open('GET', url, true);
-            xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
-            
-            xhr.onload = function() {
-                if (xhr.status >= 200 && xhr.status < 300) {
-                    try {
-                        // Coba parse JSON
-                        const response = JSON.parse(xhr.responseText);
-                        if (response.status === 'success') {
-                            showNotification('Data berhasil disimpan!', 'success');
-                            resolve(true);
-                        } else {
-                            throw new Error(response.message || 'Gagal menyimpan data');
-                        }
-                    } catch (e) {
-                        // Jika bukan JSON, cek apakah mengandung kata 'success'
-                        if (xhr.responseText.toLowerCase().includes('success')) {
-                            showNotification('Data berhasil disimpan!', 'success');
-                            resolve(true);
-                        } else {
-                            throw new Error(xhr.responseText || 'Respon tidak valid');
-                        }
+                    // Validasi dasar
+                    if (!payload.nama) {
+                        throw new Error('Nama siswa harus diisi');
                     }
-                } else {
-                    throw new Error(`Error ${xhr.status}: ${xhr.statusText}`);
-                }
-            };
-            
-            xhr.onerror = function() {
-                throw new Error('Gagal terhubung ke server');
-            };
-            
-            xhr.send();
 
-        } catch (error) {
-            console.error('Error:', error);
-            showNotification(`Gagal mengirim data: ${error.message}`, 'error');
-            reject(error);
-            
-            // Debugging info
-            console.log('Payload yang dikirim:', {
-                nama: document.getElementById('namaSiswa').value,
-                email: document.getElementById('emailSiswa').value,
-                nilai: document.getElementById('nilaiAkhir')?.textContent
+                    showNotification('Mengirim data ke spreadsheet...', 'info');
+
+                    // Menggunakan XMLHttpRequest untuk kontrol lebih baik
+                    const xhr = new XMLHttpRequest();
+                    const url = scriptUrl + '?' + new URLSearchParams(payload).toString();
+                    
+                    xhr.open('GET', url, true);
+                    xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
+                    
+                    xhr.onload = function() {
+                        if (xhr.status >= 200 && xhr.status < 300) {
+                            try {
+                                // Coba parse JSON
+                                const response = JSON.parse(xhr.responseText);
+                                if (response.status === 'success') {
+                                    showNotification('Data berhasil disimpan!', 'success');
+                                    resolve(true);
+                                } else {
+                                    throw new Error(response.message || 'Gagal menyimpan data');
+                                }
+                            } catch (e) {
+                                // Jika bukan JSON, cek apakah mengandung kata 'success'
+                                if (xhr.responseText.toLowerCase().includes('success')) {
+                                    showNotification('Data berhasil disimpan!', 'success');
+                                    resolve(true);
+                                } else {
+                                    throw new Error(xhr.responseText || 'Respon tidak valid');
+                                }
+                            }
+                        } else {
+                            throw new Error(`Error ${xhr.status}: ${xhr.statusText}`);
+                        }
+                    };
+                    
+                    xhr.onerror = function() {
+                        throw new Error('Gagal terhubung ke server');
+                    };
+                    
+                    xhr.send();
+
+                } catch (error) {
+                    console.error('Error:', error);
+                    showNotification(`Gagal mengirim data: ${error.message}`, 'error');
+                    reject(error);
+                    
+                    // Debugging info
+                    console.log('Payload yang dikirim:', {
+                        nama: document.getElementById('namaSiswa').value,
+                        email: document.getElementById('emailSiswa').value,
+                        nilai: document.getElementById('nilaiAkhir')?.textContent
+                    });
+                }
             });
         }
-    });
-}
+
         // Fungsi untuk verifikasi token
         function verifikasiToken() {
             const token = document.getElementById('tokenUjian').value;
@@ -2933,7 +2924,3 @@ function sendToSpreadsheet() {
     </script>
 </body>
 </html>
-
-
-
-
