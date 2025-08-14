@@ -1,6 +1,14 @@
 <!DOCTYPE html>
 <html lang="id">
 <head>
+    <script>
+// Fungsi untuk menangani semua error yang tidak tertangkap
+window.onerror = function(message, source, lineno, colno, error) {
+    console.error("Global error:", message, "at", source, lineno, ":", colno);
+    showNotification("Terjadi kesalahan sistem: " + message, 'error');
+    return true;
+};
+</script>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>LMS SMK FAJAR - Kelas 10 PM 2</title>
@@ -1397,38 +1405,69 @@
                     <li>Tempelkan kode berikut:</li>
                     <pre>
 function doGet(e) {
+  function doGet(e) {
+  var response = {
+    status: 'error',
+    message: 'Terjadi kesalahan',
+    received_data: null
+  };
+
   try {
-    var sheet = SpreadsheetApp.openById('ID_SPREADSHEET_ANDA').getSheetByName('NamaSheet');
+    // Buka spreadsheet
+    var spreadsheet = SpreadsheetApp.openById('1QoFS738810fYCIG3Tm2kgR08ry4wtRQ_pzta0OI1xPY');
+    var sheet = spreadsheet.getSheetByName('DataSiswa') || spreadsheet.insertSheet('DataSiswa');
     
-    // Ambil parameter dari URL
-    var params = e.parameter;
-    
-    // Validasi data
-    if (!params.nama || !params.kelas || !params.nilai) {
-      return ContentService.createTextOutput("Error: Data tidak lengkap");
+    // Buat header jika sheet baru
+    if (sheet.getLastRow() === 0) {
+      sheet.appendRow([
+        'Timestamp', 'Nama', 'Kelas', 'Nilai', 
+        'Durasi Materi 1', 'Durasi Materi 2',
+        'Durasi Materi 3', 'Durasi Materi 4',
+        'Status Absensi', 'Email'
+      ]);
     }
-    
-    // Format data
-    var timestamp = new Date();
+
+    // Validasi parameter
+    if (!e || !e.parameters) {
+      response.message = 'Tidak ada data yang diterima';
+      return ContentService.createTextOutput(JSON.stringify(response))
+        .setMimeType(ContentService.MimeType.JSON);
+    }
+
+    // Persiapkan data untuk spreadsheet
     var rowData = [
-      timestamp,
-      params.nama,
-      params.kelas,
-      parseFloat(params.nilai),
-      parseInt(params.durasi_materi1 || 0),
-      parseInt(params.durasi_materi2 || 0),
-      parseInt(params.durasi_materi3 || 0),
-      parseInt(params.durasi_materi4 || 0)
+      new Date(), // Timestamp
+      e.parameters.nama ? e.parameters.nama[0] : 'Tidak diketahui',
+      e.parameters.kelas ? e.parameters.kelas[0] : '10 PM 2',
+      e.parameters.nilai ? parseFloat(e.parameters.nilai[0]) : 0,
+      e.parameters.durasi_materi1 ? parseInt(e.parameters.durasi_materi1[0]) : 0,
+      e.parameters.durasi_materi2 ? parseInt(e.parameters.durasi_materi2[0]) : 0,
+      e.parameters.durasi_materi3 ? parseInt(e.parameters.durasi_materi3[0]) : 0,
+      e.parameters.durasi_materi4 ? parseInt(e.parameters.durasi_materi4[0]) : 0,
+      e.parameters.status_absensi ? e.parameters.status_absensi[0] : 'Tidak diketahui',
+      e.parameters.email ? e.parameters.email[0] : 'Tidak diketahui'
     ];
-    
-    // Tambahkan baris baru
+
+    // Simpan ke spreadsheet
     sheet.appendRow(rowData);
     
-    return ContentService.createTextOutput("success");
-    
+    // Response sukses
+    response.status = 'success';
+    response.message = 'Data berhasil disimpan';
+    response.received_data = {
+      nama: e.parameters.nama ? e.parameters.nama[0] : null,
+      nilai: e.parameters.nilai ? e.parameters.nilai[0] : null
+    };
+
   } catch (error) {
-    return ContentService.createTextOutput("Error: " + error.message);
+    response.message = error.message;
+    response.error_details = error.stack;
   }
+
+  // Kembalikan response sebagai JSON yang valid
+  return ContentService.createTextOutput(JSON.stringify(response))
+    .setMimeType(ContentService.MimeType.JSON);
+}
 }</pre>
                     <li>Ganti <code>ID_SPREADSHEET_ANDA</code> dengan ID spreadsheet Anda</li>
                     <li>Ganti <code>NamaSheet</code> dengan nama sheet yang ingin digunakan</li>
@@ -2591,70 +2630,83 @@ print(f"Password aman: {password}")</code></pre>
         }
 
         // Fungsi untuk kirim data ke Google Spreadsheet (SOLUSI PERBAIKAN)
-      async function sendToSpreadsheet() {
-    try {
-        const scriptUrl = 'https://script.google.com/macros/s/AKfycby-UObGxotrD5oVbWLW8TIla1JLBdGVs-e5ot7WzpXH63ZTAQ9I3GXT5bb00R3D58fpHg/exec';
-        
-        // Kumpulkan data dengan encoding yang benar
-        const data = {
-            nama: document.getElementById('namaSiswa').value.trim() || 'Nama Siswa',
-            kelas: "10 PM 2",
-            nilai: document.getElementById('nilaiAkhir')?.textContent || 0,
-            durasi_materi1: readingDurations.materi1 || 0,
-            durasi_materi2: readingDurations.materi2 || 0,
-            durasi_materi3: readingDurations.materi3 || 0,
-            durasi_materi4: readingDurations.materi4 || 0,
-            status_absensi: document.getElementById('absenStatus').value || 'Tidak diketahui',
-            email: document.getElementById('emailSiswa').value.trim() || 'Tidak diketahui'
-        };
-
-        // Validasi data
-        if (!data.nama || data.nama === 'Nama Siswa') {
-            throw new Error('Nama siswa tidak valid');
-        }
-
-        showNotification('Mengirim data ke spreadsheet...', 'info');
-        
-        // Gunakan fetch dengan error handling lebih baik
-        const response = await fetch(scriptUrl, {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/x-www-form-urlencoded',
-            },
-            body: new URLSearchParams(data).toString()
-        });
-
-        const responseText = await response.text();
-        
-        // Coba parse JSON, jika gagal tampilkan response asli
+function sendToSpreadsheet() {
+    return new Promise((resolve, reject) => {
         try {
-            const jsonResponse = JSON.parse(responseText);
-            if (jsonResponse.status === 'success') {
-                showNotification('Data berhasil dikirim ke spreadsheet!', 'success');
-            } else {
-                throw new Error(jsonResponse.message || 'Gagal menyimpan data');
+            const scriptUrl = 'https://script.google.com/macros/s/AKfycby-UObGxotrD5oVbWLW8TIla1JLBdGVs-e5ot7WzpXH63ZTAQ9I3GXT5bb00R3D58fpHg/exec';
+            
+            // Data yang akan dikirim
+            const payload = {
+                action: 'save_data',
+                nama: document.getElementById('namaSiswa').value.trim(),
+                kelas: "10 PM 2",
+                nilai: document.getElementById('nilaiAkhir')?.textContent || 0,
+                durasi_materi1: readingDurations.materi1 || 0,
+                durasi_materi2: readingDurations.materi2 || 0,
+                durasi_materi3: readingDurations.materi3 || 0,
+                durasi_materi4: readingDurations.materi4 || 0,
+                status_absensi: document.getElementById('absenStatus').value || 'Tidak diketahui',
+                email: document.getElementById('emailSiswa').value.trim() || 'Tidak diketahui'
+            };
+
+            // Validasi dasar
+            if (!payload.nama) {
+                throw new Error('Nama siswa harus diisi');
             }
-        } catch (e) {
-            // Jika bukan JSON, tampilkan response asli
-            if (responseText.includes('success')) {
-                showNotification('Data berhasil dikirim!', 'success');
-            } else {
-                throw new Error(responseText || 'Respon tidak valid dari server');
-            }
+
+            showNotification('Mengirim data ke spreadsheet...', 'info');
+
+            // Menggunakan XMLHttpRequest untuk kontrol lebih baik
+            const xhr = new XMLHttpRequest();
+            const url = scriptUrl + '?' + new URLSearchParams(payload).toString();
+            
+            xhr.open('GET', url, true);
+            xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
+            
+            xhr.onload = function() {
+                if (xhr.status >= 200 && xhr.status < 300) {
+                    try {
+                        // Coba parse JSON
+                        const response = JSON.parse(xhr.responseText);
+                        if (response.status === 'success') {
+                            showNotification('Data berhasil disimpan!', 'success');
+                            resolve(true);
+                        } else {
+                            throw new Error(response.message || 'Gagal menyimpan data');
+                        }
+                    } catch (e) {
+                        // Jika bukan JSON, cek apakah mengandung kata 'success'
+                        if (xhr.responseText.toLowerCase().includes('success')) {
+                            showNotification('Data berhasil disimpan!', 'success');
+                            resolve(true);
+                        } else {
+                            throw new Error(xhr.responseText || 'Respon tidak valid');
+                        }
+                    }
+                } else {
+                    throw new Error(`Error ${xhr.status}: ${xhr.statusText}`);
+                }
+            };
+            
+            xhr.onerror = function() {
+                throw new Error('Gagal terhubung ke server');
+            };
+            
+            xhr.send();
+
+        } catch (error) {
+            console.error('Error:', error);
+            showNotification(`Gagal mengirim data: ${error.message}`, 'error');
+            reject(error);
+            
+            // Debugging info
+            console.log('Payload yang dikirim:', {
+                nama: document.getElementById('namaSiswa').value,
+                email: document.getElementById('emailSiswa').value,
+                nilai: document.getElementById('nilaiAkhir')?.textContent
+            });
         }
-        
-    } catch (error) {
-        console.error('Error:', error);
-        showNotification(`Gagal mengirim data: ${error.message}`, 'error');
-        
-        // Tampilkan error lebih detail di console
-        console.log('Data yang dikirim:', {
-            nama: document.getElementById('namaSiswa').value,
-            email: document.getElementById('emailSiswa').value,
-            nilai: document.getElementById('nilaiAkhir')?.textContent,
-            durasi: readingDurations
-        });
-    }
+    });
 }
         // Fungsi untuk verifikasi token
         function verifikasiToken() {
@@ -2881,6 +2933,7 @@ print(f"Password aman: {password}")</code></pre>
     </script>
 </body>
 </html>
+
 
 
 
