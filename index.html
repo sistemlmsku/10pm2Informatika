@@ -2618,55 +2618,46 @@ print(f"Password aman: {password}")</code></pre>
 
         // Fungsi untuk kirim data ke Google Spreadsheet (SOLUSI PERBAIKAN)
         function sendToSpreadsheet() {
-    try {
-        const scriptUrl = 'https://script.google.com/macros/s/AKfycby-UObGxotrD5oVbWLW8TIla1JLBdGVs-e5ot7WzpXH63ZTAQ9I3GXT5bb00R3D58fpHg/exec';
-        
-        // Kumpulkan data yang diperlukan
-        const nama = document.getElementById('namaSiswa').value || 'Nama Siswa';
-        const kelas = "10 PM 2";
-        const nilai = document.getElementById('nilaiAkhir')?.textContent || 0;
-        const email = document.getElementById('emailSiswa').value || 'Tidak diketahui';
-        const statusAbsensi = document.getElementById('absenStatus').value || 'Tidak diketahui';
-        
-        // Buat payload data
-        const data = {
-            nama: nama,
-            kelas: kelas,
-            nilai: nilai,
-            durasi_materi1: readingDurations.materi1,
-            durasi_materi2: readingDurations.materi2,
-            durasi_materi3: readingDurations.materi3,
-            durasi_materi4: readingDurations.materi4,
-            status_absensi: statusAbsensi,
-            email: email
-        };
-        
-        // Tampilkan notifikasi proses pengiriman
-        showNotification('Mengirim data ke spreadsheet...', 'info');
-        
-        // Kirim data dengan metode POST
-        fetch(scriptUrl, {
-            method: 'POST',
-            mode: 'no-cors',
-            headers: {
-                'Content-Type': 'application/x-www-form-urlencoded',
-            },
-            body: new URLSearchParams(data).toString()
-        })
-        .then(() => {
-            // Karena mode no-cors, kita tidak bisa membaca response
-            // Tapi kita asumsikan berhasil jika tidak ada error
-            showNotification('Data berhasil dikirim ke spreadsheet!', 'success');
-        })
-        .catch(error => {
-            console.error('Error:', error);
-            showNotification('Gagal mengirim data ke spreadsheet: ' + error.message, 'error');
-        });
-        
-    } catch (error) {
-        console.error("Error mengirim ke spreadsheet:", error);
-        showNotification(`Gagal mengirim data: ${error.message}`, 'error');
-    }
+    const scriptUrl = 'https://script.google.com/macros/s/AKfycby-UObGxotrD5oVbWLW8TIla1JLBdGVs-e5ot7WzpXH63ZTAQ9I3GXT5bb00R3D58fpHg/exec';
+    
+    // Kumpulkan data
+    const data = {
+        nama: document.getElementById('namaSiswa').value || 'Nama Siswa',
+        kelas: "10 PM 2",
+        nilai: document.getElementById('nilaiAkhir')?.textContent || 0,
+        durasi_materi1: readingDurations.materi1,
+        durasi_materi2: readingDurations.materi2,
+        durasi_materi3: readingDurations.materi3,
+        durasi_materi4: readingDurations.materi4,
+        status_absensi: document.getElementById('absenStatus').value || 'Tidak diketahui',
+        email: document.getElementById('emailSiswa').value || 'Tidak diketahui'
+    };
+
+    showNotification('Mengirim data...', 'info');
+    
+    // Gunakan XMLHttpRequest untuk menghindari masalah CORS
+    const xhr = new XMLHttpRequest();
+    xhr.open('POST', scriptUrl);
+    xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
+    
+    xhr.onload = function() {
+        try {
+            const response = JSON.parse(xhr.responseText);
+            if (response.status === 'success') {
+                showNotification('Data berhasil disimpan!', 'success');
+            } else {
+                showNotification('Gagal: ' + response.message, 'error');
+            }
+        } catch (e) {
+            showNotification('Terjadi kesalahan parsing response', 'error');
+        }
+    };
+    
+    xhr.onerror = function() {
+        showNotification('Gagal terhubung ke server', 'error');
+    };
+    
+    xhr.send(new URLSearchParams(data).toString());
 }
 
         // Fungsi untuk verifikasi token
@@ -2894,3 +2885,4 @@ print(f"Password aman: {password}")</code></pre>
     </script>
 </body>
 </html>
+
